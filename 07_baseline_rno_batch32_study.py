@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+"""Speed-focused follow-up study for the baseline RNO using batch 32 and earlier stopping."""
+
 import json
 import os
 from pathlib import Path
@@ -65,6 +67,7 @@ def best_payload_for_family(family: str) -> dict[str, Any]:
 
 
 def build_baseline_config(batch_size: int, seed: int, model_tag: str) -> ExperimentConfig:
+    """Clone the best GRU recipe, then swap in the accelerated baseline-RNO settings."""
     reference_payload = best_payload_for_family(REFERENCE_FAMILY)
     reference_config = ExperimentConfig(**json.loads(reference_payload["best_user_attrs"]["config"]))
     reference_config.CORE_TYPE = BASELINE_CORE
@@ -78,6 +81,7 @@ def build_baseline_config(batch_size: int, seed: int, model_tag: str) -> Experim
 
 
 def train_and_evaluate(run_name: str, config: ExperimentConfig, data_bundle: dict[str, Any]) -> dict[str, Any]:
+    """Train one accelerated baseline run and immediately evaluate it on the test set."""
     print(
         f"[07] train run={run_name} core={config.CORE_TYPE} "
         f"batch={config.BATCH_SIZE} n_hidden={config.N_HIDDEN} seed={config.SEED}",
@@ -103,6 +107,7 @@ def train_and_evaluate(run_name: str, config: ExperimentConfig, data_bundle: dic
 
 
 def evaluate_existing_batch8(data_bundle: dict[str, Any]) -> dict[str, Any]:
+    """Reuse the original batch-8 baseline artifacts so the speed comparison stays fair."""
     summary = read_json(EXISTING_BATCH8_SUMMARY)
     config_payload = read_json(EXISTING_BATCH8_CONFIG)
     config = ExperimentConfig(**config_payload)
@@ -216,6 +221,7 @@ def plot_hidden_sweep_validation_overlay(run_prefix: str, results_df: pd.DataFra
 
 
 def main() -> None:
+    """Compare batch size 8 vs 32, then launch the low-hidden accelerated sweep."""
     os.environ["COURSEWORK_DEVICE"] = DEVICE
     data_bundle = prepare_data(train_path=TRAIN_PATH, artifact_root=ARTIFACT_ROOT, split_seed=SPLIT_SEED)
 

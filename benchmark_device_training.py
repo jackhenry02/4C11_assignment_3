@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+"""Replay one representative training configuration on CPU and MPS for runtime benchmarking."""
+
 import json
 import os
 import time
@@ -53,6 +55,7 @@ FALLBACK_CONFIG = {
 
 
 def load_reference_config() -> tuple[ExperimentConfig, dict[str, str | int | float]]:
+    """Use the saved best RNN config when available, otherwise fall back to a fixed recipe."""
     payload: dict[str, object] = {}
     if BEST_PARAMS_PATH.exists():
         payload = json.loads(BEST_PARAMS_PATH.read_text(encoding="utf-8"))
@@ -105,6 +108,7 @@ def load_reference_config() -> tuple[ExperimentConfig, dict[str, str | int | flo
 
 
 def benchmark_device(device_name: str, data_bundle: dict, base_config: ExperimentConfig) -> dict[str, object]:
+    """Train the same configuration on one requested device and record timing and best loss."""
     os.environ["COURSEWORK_DEVICE"] = device_name
     start = time.perf_counter()
     try:
@@ -154,6 +158,7 @@ def benchmark_device(device_name: str, data_bundle: dict, base_config: Experimen
 
 
 def main() -> None:
+    """Run the device comparison and save a machine-readable summary."""
     directories = ensure_artifact_tree(ARTIFACT_ROOT)
     benchmark_dir = directories["logs"]
 

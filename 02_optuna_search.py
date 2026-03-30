@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+"""Run the main Optuna architecture comparison across RNN, GRU, and LSTM cores."""
+
 import json
 import os
 import time
@@ -38,6 +40,7 @@ PRINT_EVERY_EPOCHS = 10
 
 
 def trial_to_config(trial: optuna.Trial, core_type: str, model_tag: str) -> ExperimentConfig:
+    """Translate one Optuna suggestion into the shared training-config object."""
     return ExperimentConfig(
         CORE_TYPE=core_type,
         EPOCHS=EPOCHS,
@@ -65,6 +68,7 @@ def trial_to_config(trial: optuna.Trial, core_type: str, model_tag: str) -> Expe
 
 
 def export_study_outputs(study: optuna.Study, family: str, artifact_root: str | Path = ARTIFACT_ROOT) -> dict[str, Path]:
+    """Persist the study tables after each trial so long runs remain recoverable."""
     directories = ensure_artifact_tree(artifact_root)
     optuna_dir = directories["optuna"]
 
@@ -137,6 +141,7 @@ def run_family_study(
     data_bundle: dict,
     artifact_root: str | Path = ARTIFACT_ROOT,
 ) -> dict[str, Path]:
+    """Optimise one recurrent-core family while continuously exporting progress to disk."""
     directories = ensure_artifact_tree(artifact_root)
     study_name = f"coursework3_{family}"
     storage_path = directories["optuna"] / f"study_{family}.db"
@@ -155,6 +160,7 @@ def run_family_study(
 
     def objective(trial: optuna.Trial) -> float:
         model_tag = f"optuna_{family}_trial_{trial.number:04d}"
+        # Each trial is a full independent training run under one sampled hyperparameter set.
         config = trial_to_config(trial=trial, core_type=family, model_tag=model_tag)
         print(
             f"[optuna] family={family} trial={trial.number + 1} "
@@ -185,6 +191,7 @@ def run_family_study(
         return float(result["best_val_loss"])
 
     def callback(study: optuna.Study, trial: optuna.FrozenTrial) -> None:
+        # Export after every finished trial so the run can be inspected or resumed safely.
         export_study_outputs(study=study, family=family, artifact_root=artifact_root)
         print(
             f"[optuna] family={family} progress completed_trials={len(study.trials)} "
@@ -213,6 +220,7 @@ def run_family_study(
 
 
 def main() -> None:
+    """Run the family studies sequentially and save a compact comparison table."""
     os.environ["COURSEWORK_DEVICE"] = DEVICE
     data_bundle = prepare_data(train_path=TRAIN_PATH, artifact_root=ARTIFACT_ROOT, split_seed=SEED)
     result_rows = []

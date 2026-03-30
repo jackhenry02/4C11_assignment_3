@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+"""Test the paper-style RNO at h=0 with and without direct strain-rate input."""
+
 import json
 import os
 from pathlib import Path
@@ -54,6 +56,7 @@ def save_figure(fig: plt.Figure, path: str | Path) -> Path:
 
 
 def build_paper_config(use_rate: bool, model_tag: str) -> ExperimentConfig:
+    """Reuse the tuned GRU recipe, but swap in the paper-style core and h=0 setting."""
     payload = read_json(REFERENCE_PARAMS_PATH)
     config = ExperimentConfig(**json.loads(payload["best_user_attrs"]["config"]))
     config.CORE_TYPE = "paper_rno"
@@ -69,6 +72,7 @@ def build_paper_config(use_rate: bool, model_tag: str) -> ExperimentConfig:
 
 
 def run_variant(data_bundle: dict[str, Any], use_rate: bool) -> dict[str, Any]:
+    """Train and evaluate one h=0 paper-RNO variant."""
     variant_key = "with_rate" if use_rate else "no_rate"
     run_name = f"08_paper_rno_h0_{variant_key}"
     config = build_paper_config(use_rate=use_rate, model_tag=run_name)
@@ -102,6 +106,7 @@ def run_variant(data_bundle: dict[str, Any], use_rate: bool) -> dict[str, Any]:
 
 
 def plot_comparison(results_df: pd.DataFrame) -> Path:
+    """Summarise how the two h=0 variants differ in loss, test error, and runtime."""
     fig, axes = plt.subplots(1, 3, figsize=(12.0, 4.2))
     labels = ["no rate", "with rate"]
     colors = ["#1f77b4", "#d62728"]
@@ -126,6 +131,7 @@ def plot_comparison(results_df: pd.DataFrame) -> Path:
 
 
 def main() -> None:
+    """Run both h=0 paper-RNO variants and save a compact comparison table and figure."""
     os.environ["COURSEWORK_DEVICE"] = DEVICE
     data_bundle = prepare_data(train_path=TRAIN_PATH, artifact_root=ARTIFACT_ROOT, split_seed=SPLIT_SEED)
 

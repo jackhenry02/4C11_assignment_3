@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+"""Sweep hidden size for the paper-style RNO with and without explicit strain-rate input."""
+
 import json
 import os
 from pathlib import Path
@@ -71,6 +73,7 @@ def save_figure(fig: plt.Figure, path: str | Path) -> Path:
 
 
 def build_paper_config(use_rate: bool, seed: int, model_tag: str) -> ExperimentConfig:
+    """Start from the tuned GRU recipe and swap only the paper-RNO-specific settings."""
     payload = read_json(REFERENCE_PARAMS_PATH)
     config = ExperimentConfig(**json.loads(payload["best_user_attrs"]["config"]))
     config.CORE_TYPE = "paper_rno"
@@ -89,6 +92,7 @@ def evaluate_sweep_results(
     data_bundle: dict[str, Any],
     variant_label: str,
 ) -> pd.DataFrame:
+    """Evaluate every hidden-size checkpoint on the test set for a second axis of comparison."""
     rows: list[dict[str, Any]] = []
     for row in results_df.sort_values(["n_hidden", "seed"]).itertuples(index=False):
         checkpoint_path = getattr(row, "checkpoint_path")
@@ -121,6 +125,7 @@ def evaluate_sweep_results(
 
 
 def plot_validation_overlay(grouped_frames: list[pd.DataFrame], labels: list[str], colors: list[str]) -> Path:
+    """Overlay validation loss versus hidden size for the two paper-RNO variants."""
     fig, ax = plt.subplots(figsize=(8.5, 5.0))
     for grouped, label, color in zip(grouped_frames, labels, colors):
         ax.plot(grouped["n_hidden"], grouped["mean_val_loss"], marker="o", linewidth=2.0, color=color, label=label)
@@ -135,6 +140,7 @@ def plot_validation_overlay(grouped_frames: list[pd.DataFrame], labels: list[str
 
 
 def plot_test_relative_l2_overlay(test_metrics_df: pd.DataFrame, colors_by_variant: dict[str, str]) -> Path:
+    """Plot test relative L2 versus hidden size for the two paper-RNO variants."""
     fig, ax = plt.subplots(figsize=(8.5, 5.0))
     grouped = (
         test_metrics_df.groupby(["variant", "n_hidden"], as_index=False)
@@ -162,6 +168,7 @@ def plot_test_relative_l2_overlay(test_metrics_df: pd.DataFrame, colors_by_varia
 
 
 def main() -> None:
+    """Run both hidden sweeps and save combined validation and test summaries."""
     os.environ["COURSEWORK_DEVICE"] = DEVICE
     data_bundle = prepare_data(train_path=TRAIN_PATH, artifact_root=ARTIFACT_ROOT, split_seed=SPLIT_SEED)
 

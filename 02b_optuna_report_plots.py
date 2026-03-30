@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+"""Turn the finished Optuna studies into static figures and report tables."""
+
 import json
 import os
 from pathlib import Path
@@ -54,6 +56,7 @@ def load_json(path: str | Path) -> dict:
 
 
 def load_study_for_family(family: str) -> optuna.Study:
+    """Reopen the saved SQLite study so the Optuna-derived plots can be reproduced later."""
     summary = load_json(OPTUNA_DIR / f"study_summary_{family}.json")
     storage_path = OPTUNA_DIR / f"study_{family}.db"
     return optuna.load_study(
@@ -63,6 +66,7 @@ def load_study_for_family(family: str) -> optuna.Study:
 
 
 def load_family_data(family: str) -> dict[str, object]:
+    """Gather the saved tables needed to build one family's report plots."""
     trials_df = pd.read_csv(OPTUNA_DIR / f"trials_{family}.csv")
     timing_df = pd.read_csv(OPTUNA_DIR / f"timing_{family}.csv")
     summary = load_json(OPTUNA_DIR / f"study_summary_{family}.json")
@@ -115,6 +119,7 @@ def save_figure(fig: plt.Figure, path: str | Path) -> Path:
 
 
 def make_family_best_value_bar(family_summary_df: pd.DataFrame) -> Path:
+    """Compare the best validation loss reached by each recurrent-core family."""
     ordered = family_summary_df.sort_values("best_value").reset_index(drop=True)
     fig, ax = plt.subplots(figsize=(7, 4.5))
     bars = ax.bar(
@@ -140,6 +145,7 @@ def make_family_best_value_bar(family_summary_df: pd.DataFrame) -> Path:
 
 
 def make_family_best_duration_bar(family_summary_df: pd.DataFrame) -> Path:
+    """Compare the runtime of the single best trial in each family."""
     ordered = family_summary_df.sort_values("best_trial_elapsed_seconds").reset_index(drop=True)
     minutes = ordered["best_trial_elapsed_seconds"] / 60.0
     fig, ax = plt.subplots(figsize=(7, 4.5))

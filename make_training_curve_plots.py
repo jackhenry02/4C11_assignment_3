@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+"""Post-process saved histories into report figures without retraining anything."""
+
 import json
 import os
 import re
@@ -42,6 +44,7 @@ def load_json(path: str | Path) -> dict:
 
 
 def history_path_for_best_optuna_family(family: str) -> tuple[Path, dict]:
+    """Locate the history CSV for the saved best Optuna trial of one family."""
     payload = load_json(OPTUNA_DIR / f"best_params_{family}.json")
     best_trial_number = int(payload["best_trial_number"])
     history_path = LOG_DIR / f"optuna_{family}_trial_{best_trial_number:04d}_history.csv"
@@ -51,6 +54,7 @@ def history_path_for_best_optuna_family(family: str) -> tuple[Path, dict]:
 
 
 def plot_best_optuna_curves() -> list[Path]:
+    """Create individual and combined training-curve plots for the family winners."""
     ensure_directory(OPTUNA_FIGURE_DIR)
     saved_paths: list[Path] = []
     combined_fig, combined_axes = plt.subplots(1, 3, figsize=(15, 4.5), sharey=True)
@@ -124,6 +128,7 @@ def parse_hidden_history_filename(path: Path) -> tuple[int, int] | None:
 
 
 def collect_hidden_histories() -> pd.DataFrame:
+    """Index any hidden-sweep histories already present on disk so they can be overlaid later."""
     rows: list[dict[str, object]] = []
     patterns = [
         ("hidden_threshold_low_dim", LOG_DIR.glob("hidden_threshold_low_dim_*_history.csv")),
@@ -178,6 +183,7 @@ def collect_hidden_histories() -> pd.DataFrame:
 
 
 def plot_hidden_validation_overlay() -> Path | None:
+    """Overlay the best available validation histories for each tested hidden size."""
     ensure_directory(HIDDEN_FIGURE_DIR)
     history_index = collect_hidden_histories()
     if history_index.empty:

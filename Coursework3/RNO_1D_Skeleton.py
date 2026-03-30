@@ -1,5 +1,13 @@
 from __future__ import annotations
 
+"""Shared coursework utilities for the recurrent constitutive-model workflow.
+
+The file keeps the original skeleton naming where possible, then layers on the
+additional machinery needed for the coursework: deterministic splits, train-only
+normalisation, recurrent-core variants, checkpointing, hidden-size studies,
+inference, and report plots.
+"""
+
 import copy
 import json
 import os
@@ -175,6 +183,8 @@ class DenseNet(nn.Module):
 
 
 class MatReader(object):
+    """Load MATLAB `.mat` files from either the classic or HDF5-backed formats."""
+
     def __init__(self, file_path: str | Path, to_torch: bool = True, to_cuda: bool = False, to_float: bool = True):
         super(MatReader, self).__init__()
 
@@ -226,6 +236,8 @@ class MatReader(object):
 
 
 class MinMaxNormalizer:
+    """Fit and reuse the train-only min/max scaling used throughout the workflow."""
+
     def __init__(self, feature_min: float = -1.0, feature_max: float = 1.0):
         self.feature_min = feature_min
         self.feature_max = feature_max
@@ -284,6 +296,8 @@ class MinMaxNormalizer:
 
 
 class ZScoreNormalizer:
+    """Simple z-score normaliser used only for EDA comparisons."""
+
     def __init__(self):
         self.mean: float | None = None
         self.std: float | None = None
@@ -304,6 +318,8 @@ class ZScoreNormalizer:
 
 
 class RNO(nn.Module):
+    """Recurrent constitutive operator with interchangeable hidden-state mechanisms."""
+
     def __init__(
         self,
         input_size: int,
@@ -359,10 +375,12 @@ class RNO(nn.Module):
     ) -> tuple[torch.Tensor, torch.Tensor | tuple[torch.Tensor, torch.Tensor]]:
         if self.is_baseline_rno:
             if not self.has_hidden_state:
+                # h=0 baseline: only the previous strain and its discrete rate reach the readout.
                 combined = torch.cat((output, (output - input) / dt), dim=1)
                 x = self.layers(combined)
                 output = x.squeeze(1)
                 return output, hidden
+            # Skeleton-style hidden update: explicit Euler step on the learned internal variables.
             hidden_prev = hidden
             hidden_input = torch.cat((output, hidden_prev), dim=1)
             hidden_update = self.hidden_layers(hidden_input)
@@ -375,17 +393,20 @@ class RNO(nn.Module):
         if self.is_paper_rno:
             rate = (input - output) / dt
             if self.has_hidden_state:
+                # Paper-style latent state evolution is driven by the current strain state.
                 hidden_prev = hidden
                 hidden_input = torch.cat((input, hidden_prev), dim=1)
                 hidden_update = self.hidden_layers(hidden_input)
                 hidden_next = hidden_prev + dt * hidden_update
                 hidden_for_output = hidden_next
             else:
+                # h=0 keeps the paper-style model honest: no latent memory is carried in time.
                 hidden_next = hidden
                 hidden_for_output = input.new_zeros((input.shape[0], 0))
 
             combined_parts = [input]
             if self.paper_use_rate_in_stress:
+                # The viscoelastic paper variant exposes rate only in the stress readout.
                 combined_parts.append(rate)
             if self.has_hidden_state:
                 combined_parts.append(hidden_for_output)
@@ -427,6 +448,8 @@ class RNO(nn.Module):
 
 @dataclass
 class ExperimentConfig:
+    """Single config object shared by training, Optuna, and follow-up studies."""
+
     CORE_TYPE: str = "rnn"
     EPOCHS: int = 250
     BATCH_SIZE: int = 32
@@ -621,6 +644,7 @@ def prepare_data(
     f_field: str = F_FIELD,
     sig_field: str = SIG_FIELD,
 ) -> dict[str, Any]:
+    """Load the raw histories, build a deterministic split, and fit train-only scalers."""
     configure_matplotlib_cache(artifact_root)
     directories = ensure_artifact_tree(artifact_root)
 
@@ -710,13 +734,16 @@ def rollout_sequence(
     initial_stress_model: InitialStressModel,
     y_true0: torch.Tensor | None = None,
 ) -> torch.Tensor:
+    """Roll the constitutive model forward one time step at a time over the full history."""
     batch_size, T = x.shape
     hidden = net.initHidden(batch_size, device=x.device)
     y_approx = torch.zeros(batch_size, T, device=x.device, dtype=x.dtype)
 
     if y_true0 is not None:
+        # Training and evaluation can pin the first stress to the known target value.
         y_approx[:, 0] = y_true0
     else:
+        # Free-running inference estimates the first stress from the fitted initial-rate model.
         rate0 = (x[:, 1] - x[:, 0]) / dt
         y_approx[:, 0] = initial_stress_model.predict(rate0)
 
@@ -744,6 +771,7 @@ def compute_metrics(
     output_normalizer: MinMaxNormalizer,
     start_index: int = 1,
 ) -> dict[str, float]:
+    """Report metrics on raw stress values so tables stay physically interpretable."""
     y_true_np = to_numpy(y_true)[:, start_index:]
     y_pred_np = to_numpy(y_pred)[:, start_index:]
     y_true_raw = to_numpy(output_normalizer.inverse_transform(y_true_np))
@@ -812,6 +840,7 @@ def load_checkpoint(
     checkpoint_path: str | Path,
     device: torch.device | None = None,
 ) -> tuple[RNO, dict[str, Any]]:
+    """Restore a saved model together with the config needed to rebuild its architecture."""
     if device is None:
         device = select_device()
     checkpoint = torch.load(checkpoint_path, map_location=device)
@@ -839,6 +868,7 @@ def train_model(
     train_on_train_plus_val: bool = False,
     fixed_epochs: int | None = None,
 ) -> dict[str, Any]:
+    """Run the full training loop, checkpoint the best epoch, and log every epoch to disk."""
     configure_matplotlib_cache(artifact_root)
     directories = ensure_artifact_tree(artifact_root)
     set_seeds(config.SEED)
@@ -848,6 +878,7 @@ def train_model(
     loss_func = nn.MSELoss()
 
     if train_on_train_plus_val:
+        # Final retraining mode combines the train and validation subsets after model selection.
         x_train = torch.cat([data_bundle["x_train"], data_bundle["x_val"]], dim=0)
         y_train = torch.cat([data_bundle["y_train"], data_bundle["y_val"]], dim=0)
         x_val = None
@@ -932,6 +963,7 @@ def train_model(
         train_grad_norm = train_grad_norm_accumulator / max(n_train_batches, 1)
 
         if x_val is not None and y_val is not None:
+            # Standard training mode uses the held-out validation split for model selection.
             net.eval()
             with torch.no_grad():
                 y_val_device = y_val.to(device)
@@ -950,6 +982,7 @@ def train_model(
                     output_normalizer=data_bundle["output_normalizer"],
                 )
         else:
+            # Retraining mode reuses the combined training set only for monitored bookkeeping.
             net.eval()
             with torch.no_grad():
                 x_train_device = x_train.to(device)
@@ -981,6 +1014,7 @@ def train_model(
         history_rows.append(row)
 
         if val_loss < best_val_loss - 1e-8:
+            # Persist only the best-performing checkpoint so later analysis always loads it directly.
             best_val_loss = val_loss
             best_epoch = ep
             epochs_without_improvement = 0
@@ -1788,6 +1822,7 @@ def run_hidden_threshold_sweep(
     artifact_root: str | Path = DEFAULT_ARTIFACT_ROOT,
     run_prefix: str = "hidden_threshold",
 ) -> dict[str, Any]:
+    """Exhaustive hidden-size sweep over a fixed grid and a fixed seed list."""
     rows: list[dict[str, Any]] = []
     for n_hidden in hidden_grid:
         for seed in seeds:
@@ -2124,6 +2159,7 @@ def run_hidden_threshold_grid(
     reference_loss: float | None = None,
     verbose: bool = True,
 ) -> dict[str, Any]:
+    """Cached grid sweep used when the hidden sizes are fixed in advance."""
     if not hidden_grid:
         raise ValueError("hidden_grid must contain at least one hidden size.")
 
@@ -2458,6 +2494,7 @@ def run_inference_and_testing(
     artifact_root: str | Path = DEFAULT_ARTIFACT_ROOT,
     split_seed: int = DEFAULT_SPLIT_SEED,
 ) -> dict[str, Any]:
+    """Evaluate a saved checkpoint on the test split and on hand-crafted unseen load cases."""
     data_bundle = prepare_data(artifact_root=artifact_root, split_seed=split_seed)
     evaluation = evaluate_checkpoint(
         checkpoint_path=checkpoint_path,
@@ -2631,6 +2668,7 @@ def run_trajectory_and_hysteresis_analysis(
     artifact_root: str | Path = DEFAULT_ARTIFACT_ROOT,
     split_seed: int = DEFAULT_SPLIT_SEED,
 ) -> dict[str, Any]:
+    """Generate qualitative best/median/worst plots and cyclic-response hysteresis figures."""
     data_bundle = prepare_data(artifact_root=artifact_root, split_seed=split_seed)
     evaluation = evaluate_checkpoint(
         checkpoint_path=checkpoint_path,
@@ -2711,6 +2749,7 @@ LOADING_CLASS_LABELS = {
 
 
 def make_loading_case_features(strain_raw: np.ndarray) -> pd.DataFrame:
+    """Extract simple descriptors that distinguish monotonic, cyclic, and mixed histories."""
     dt = 1.0 / max(strain_raw.shape[1] - 1, 1)
     rows: list[dict[str, Any]] = []
     for sample_index, strain in enumerate(strain_raw):
@@ -2755,6 +2794,7 @@ def make_loading_case_features(strain_raw: np.ndarray) -> pd.DataFrame:
 
 
 def assign_loading_classes(feature_df: pd.DataFrame) -> pd.DataFrame:
+    """Map the raw trajectory features into a small, report-friendly set of loading classes."""
     classified_df = feature_df.copy()
     base_label: list[str] = []
     for row in classified_df.itertuples(index=False):
@@ -2795,6 +2835,7 @@ def summarize_sample_prediction_metrics(
     y_pred_raw: np.ndarray,
     start_index: int = 1,
 ) -> pd.DataFrame:
+    """Compute per-sample errors so model performance can be grouped by loading class."""
     truth = y_true_raw[:, start_index:]
     pred = y_pred_raw[:, start_index:]
     residual = pred - truth
@@ -2948,6 +2989,7 @@ def plot_loading_case_relative_l2_heatmap(
 def build_default_loading_case_model_specs(
     artifact_root: str | Path = DEFAULT_ARTIFACT_ROOT,
 ) -> list[dict[str, Any]]:
+    """Assemble a compact comparison set from the already-saved checkpoints."""
     artifact_root = Path(artifact_root)
     model_specs: list[dict[str, Any]] = []
 
@@ -2991,6 +3033,7 @@ def run_loading_case_analysis(
     artifact_root: str | Path = DEFAULT_ARTIFACT_ROOT,
     split_seed: int = DEFAULT_SPLIT_SEED,
 ) -> dict[str, Any]:
+    """Classify the test set once, evaluate selected models, and save per-class summaries."""
     directories = ensure_artifact_tree(artifact_root)
     data_bundle = prepare_data(artifact_root=artifact_root, split_seed=split_seed)
     strain_raw = to_numpy(data_bundle["input_normalizer"].inverse_transform(data_bundle["x_test"]))
