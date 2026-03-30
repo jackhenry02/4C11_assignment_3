@@ -1,0 +1,4 @@
+split,n_samples,indices_path
+train,280,artifacts/splits/split_seed_20260328.npz
+validation,60,artifacts/splits/split_seed_20260328.npz
+test,60,artifacts/splits/split_seed_20260328.npz

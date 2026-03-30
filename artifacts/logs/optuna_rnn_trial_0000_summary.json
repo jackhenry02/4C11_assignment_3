@@ -1,0 +1,10 @@
+{
+  "best_epoch": 195,
+  "best_val_loss": 8.373259333893657e-06,
+  "checkpoint_path": "/Users/jackhenry/Library/CloudStorage/OneDrive-UniversityofCambridge/Labs and Courswork/IIB Coursework/4C11/4C11_assignment_3/artifacts/checkpoints/optuna_rnn_trial_0000.pt",
+  "config_path": "/Users/jackhenry/Library/CloudStorage/OneDrive-UniversityofCambridge/Labs and Courswork/IIB Coursework/4C11/4C11_assignment_3/artifacts/logs/optuna_rnn_trial_0000_config.json",
+  "device": "cpu",
+  "history_path": "/Users/jackhenry/Library/CloudStorage/OneDrive-UniversityofCambridge/Labs and Courswork/IIB Coursework/4C11/4C11_assignment_3/artifacts/logs/optuna_rnn_trial_0000_history.csv",
+  "n_epochs_completed": 220,
+  "run_name": "optuna_rnn_trial_0000"
+}

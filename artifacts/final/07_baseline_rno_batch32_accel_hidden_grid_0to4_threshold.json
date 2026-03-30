@@ -1,0 +1,21 @@
+{
+  "acceptable_hidden": [
+    4
+  ],
+  "best_hidden": 4,
+  "best_loss": 5.8175023696094286e-06,
+  "grouped_results_path": "artifacts/final/07_baseline_rno_batch32_accel_hidden_grid_0to4_grouped_results.csv",
+  "hidden_grid": [
+    0,
+    1,
+    2,
+    3,
+    4
+  ],
+  "minimum_hidden": 4,
+  "reference_loss": null,
+  "selected_hidden": 4,
+  "threshold_found": true,
+  "threshold_limit": 6.1083774880899e-06,
+  "trace_path": "artifacts/final/07_baseline_rno_batch32_accel_hidden_grid_0to4_trace.csv"
+}

@@ -12,3 +12,8 @@ wheels/
 
 # ipynb
 .ipynb_checkpoints/
+
+# Coursework artifacts
+# artifacts/
+artifacts_smoke/
+artifacts_*/

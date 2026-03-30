@@ -1,0 +1,11 @@
+item,value
+Ntotal,400.0
+train_size,280.0
+val_size,60.0
+test_size,60.0
+inputsize,1001.0
+dt,0.001
+strain_min,-0.21785902976989746
+strain_max,0.219681516289711
+stress_min,-1.2354817390441895
+stress_max,1.2545946836471558

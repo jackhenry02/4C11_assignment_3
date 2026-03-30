@@ -1,0 +1,11 @@
+{
+  "baseline_core": "baseline_rno",
+  "comparison_csv": "artifacts/reports/07_baseline_rno_batchsize_comparison.csv",
+  "device": "cpu",
+  "reference_family": "gru",
+  "reference_seed": 20260340,
+  "relative_l2_ratio_batch32_over_batch8": 1.0967664767172327,
+  "runtime_relative_l2_plot": "artifacts/figures/07_baseline_rno_batchsize_runtime_relative_l2.png",
+  "speedup_batch32_over_batch8": null,
+  "validation_curve_plot": "artifacts/figures/07_baseline_rno_batchsize_validation_curves.png"
+}

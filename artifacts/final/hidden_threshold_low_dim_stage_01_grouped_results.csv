@@ -1,0 +1,5 @@
+n_hidden,mean_val_loss,std_val_loss,median_best_epoch,n_runs,within_threshold
+0,8.337293365912046e-06,,210.0,1,False
+1,7.619927146151895e-06,,214.0,1,False
+2,6.777648195566144e-06,,209.0,1,False
+3,4.2670681068557315e-06,,216.0,1,False

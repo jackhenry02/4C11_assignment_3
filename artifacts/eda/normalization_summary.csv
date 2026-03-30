@@ -1,0 +1,3 @@
+normalizer,data_min,data_max,feature_min,feature_max
+input_minmax,-0.21516388654708862,0.219681516289711,-1.0,1.0
+output_minmax,-1.2205665111541748,1.2545946836471558,-1.0,1.0

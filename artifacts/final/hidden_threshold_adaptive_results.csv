@@ -1,0 +1,2 @@
+n_hidden,seed,best_val_loss,best_epoch,checkpoint_path,search_stage,search_order
+4,20260328,3.2697046208340907e-06,218,artifacts/checkpoints/hidden_threshold_adaptive_gru_h4_seed_20260328.pt,initial,0

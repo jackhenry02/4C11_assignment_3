@@ -1,0 +1,26 @@
+{
+  "acceptable_hidden": [
+    4
+  ],
+  "active_seeds": [
+    20260328
+  ],
+  "best_hidden": 4,
+  "figure_path": "artifacts/figures/07_baseline_rno_batch32_accel_hidden_grid_0to4_stage_01_threshold.png",
+  "grouped_results_path": "artifacts/final/07_baseline_rno_batch32_accel_hidden_grid_0to4_stage_01_grouped_results.csv",
+  "hidden_grid": [
+    0,
+    1,
+    2,
+    3,
+    4
+  ],
+  "minimum_hidden": 4,
+  "reference_loss": null,
+  "results_path": "artifacts/final/07_baseline_rno_batch32_accel_hidden_grid_0to4_results.csv",
+  "selected_hidden": 4,
+  "stage_index": 1,
+  "threshold_found": true,
+  "threshold_limit": 6.1083774880899e-06,
+  "trace_path": "artifacts/final/07_baseline_rno_batch32_accel_hidden_grid_0to4_trace.csv"
+}

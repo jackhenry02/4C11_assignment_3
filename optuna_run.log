@@ -1,0 +1,282 @@
+[optuna] starting family=rnn device=cpu trials=30 epochs=220 min_epochs=90
+[optuna] family=rnn trial=1 n_hidden=8 batch=16 lr=8.723e-04 wd=3.516e-06 readout=(3,128) feature=(3,16)
+[optuna] family=rnn trial=1 complete best_val=8.373259e-06 best_epoch=195 elapsed_s=1564.2
+[optuna] family=rnn progress completed_trials=1 current_best=8.373259e-06 best_trial=1
+[optuna] family=rnn trial=2 n_hidden=8 batch=32 lr=5.037e-04 wd=2.212e-04 readout=(2,128) feature=(2,16)
+[optuna] family=rnn trial=2 complete best_val=1.274996e-05 best_epoch=219 elapsed_s=553.8
+[optuna] family=rnn progress completed_trials=2 current_best=8.373259e-06 best_trial=1
+[optuna] family=rnn trial=3 n_hidden=32 batch=32 lr=2.363e-04 wd=1.227e-05 readout=(2,192) feature=(1,16)
+[optuna] family=rnn trial=3 complete best_val=9.385291e-06 best_epoch=220 elapsed_s=535.7
+[optuna] family=rnn progress completed_trials=3 current_best=8.373259e-06 best_trial=1
+[optuna] family=rnn trial=4 n_hidden=40 batch=8 lr=1.740e-03 wd=1.688e-05 readout=(4,96) feature=(2,32)
+[optuna] family=rnn trial=4 complete best_val=7.428163e-06 best_epoch=209 elapsed_s=2485.6
+[optuna] family=rnn progress completed_trials=4 current_best=7.428163e-06 best_trial=4
+[optuna] family=rnn trial=5 n_hidden=12 batch=16 lr=3.241e-04 wd=2.764e-04 readout=(3,128) feature=(3,64)
+[optuna] family=rnn trial=5 complete best_val=8.384717e-06 best_epoch=219 elapsed_s=1421.7
+[optuna] family=rnn progress completed_trials=5 current_best=7.428163e-06 best_trial=4
+[optuna] family=rnn trial=6 n_hidden=16 batch=32 lr=5.028e-04 wd=6.419e-03 readout=(2,192) feature=(3,16)
+[optuna] family=rnn trial=6 complete best_val=8.404767e-06 best_epoch=217 elapsed_s=648.3
+[optuna] family=rnn progress completed_trials=6 current_best=7.428163e-06 best_trial=4
+[optuna] family=rnn trial=7 n_hidden=28 batch=32 lr=4.113e-03 wd=8.162e-03 readout=(2,192) feature=(3,16)
+[optuna] family=rnn trial=7 complete best_val=8.409406e-06 best_epoch=211 elapsed_s=660.5
+[optuna] family=rnn progress completed_trials=7 current_best=7.428163e-06 best_trial=4
+[optuna] family=rnn trial=8 n_hidden=4 batch=8 lr=3.883e-03 wd=1.257e-04 readout=(3,192) feature=(2,64)
+[optuna] family=rnn trial=8 complete best_val=8.488480e-06 best_epoch=194 elapsed_s=2341.0
+[optuna] family=rnn progress completed_trials=8 current_best=7.428163e-06 best_trial=4
+[optuna] family=rnn trial=9 n_hidden=44 batch=16 lr=1.315e-03 wd=1.810e-03 readout=(4,128) feature=(2,64)
+[optuna] family=rnn trial=9 complete best_val=7.614736e-06 best_epoch=207 elapsed_s=1149.4
+[optuna] family=rnn progress completed_trials=9 current_best=7.428163e-06 best_trial=4
+[optuna] family=rnn trial=10 n_hidden=32 batch=16 lr=1.829e-04 wd=8.929e-03 readout=(2,192) feature=(2,32)
+[optuna] family=rnn trial=10 complete best_val=9.420761e-06 best_epoch=217 elapsed_s=762.6
+[optuna] family=rnn progress completed_trials=10 current_best=7.428163e-06 best_trial=4
+[optuna] family=rnn trial=11 n_hidden=48 batch=8 lr=1.781e-03 wd=1.804e-05 readout=(4,96) feature=(1,32)
+[optuna] family=rnn trial=11 complete best_val=6.773434e-06 best_epoch=219 elapsed_s=1463.0
+[optuna] family=rnn progress completed_trials=11 current_best=6.773434e-06 best_trial=11
+[optuna] family=rnn trial=12 n_hidden=48 batch=8 lr=1.818e-03 wd=1.812e-05 readout=(4,96) feature=(1,32)
+[optuna] family=rnn trial=12 complete best_val=5.440690e-06 best_epoch=215 elapsed_s=1456.1
+[optuna] family=rnn progress completed_trials=12 current_best=5.440690e-06 best_trial=12
+[optuna] family=rnn trial=13 n_hidden=48 batch=8 lr=2.051e-03 wd=2.494e-05 readout=(4,96) feature=(1,32)
+[optuna] family=rnn trial=13 complete best_val=6.757099e-06 best_epoch=207 elapsed_s=1464.5
+[optuna] family=rnn progress completed_trials=13 current_best=5.440690e-06 best_trial=12
+[optuna] family=rnn trial=14 n_hidden=40 batch=8 lr=1.014e-04 wd=1.225e-06 readout=(4,96) feature=(1,96)
+[optuna] family=rnn trial=14 complete best_val=6.674777e-06 best_epoch=204 elapsed_s=1540.6
+[optuna] family=rnn progress completed_trials=14 current_best=5.440690e-06 best_trial=12
+[optuna] family=rnn trial=15 n_hidden=40 batch=8 lr=1.353e-04 wd=1.086e-06 readout=(4,64) feature=(1,96)
+[optuna] family=rnn trial=15 complete best_val=6.890145e-06 best_epoch=219 elapsed_s=1467.3
+[optuna] family=rnn progress completed_trials=15 current_best=5.440690e-06 best_trial=12
+[optuna] family=rnn trial=16 n_hidden=20 batch=8 lr=1.092e-04 wd=1.370e-06 readout=(4,96) feature=(1,96)
+[optuna] family=rnn trial=16 complete best_val=7.623983e-06 best_epoch=213 elapsed_s=1479.6
+[optuna] family=rnn progress completed_trials=16 current_best=5.440690e-06 best_trial=12
+[optuna] family=rnn trial=17 n_hidden=36 batch=8 lr=9.554e-04 wd=3.833e-06 readout=(3,96) feature=(1,96)
+[optuna] family=rnn trial=17 complete best_val=6.194528e-06 best_epoch=220 elapsed_s=1257.1
+[optuna] family=rnn progress completed_trials=17 current_best=5.440690e-06 best_trial=12
+[optuna] family=rnn trial=18 n_hidden=36 batch=8 lr=7.371e-04 wd=4.466e-06 readout=(3,64) feature=(1,96)
+[optuna] family=rnn trial=18 complete best_val=7.017929e-06 best_epoch=190 elapsed_s=1237.8
+[optuna] family=rnn progress completed_trials=18 current_best=5.440690e-06 best_trial=12
+[optuna] family=rnn trial=19 n_hidden=24 batch=8 lr=1.106e-03 wd=5.542e-05 readout=(3,96) feature=(1,32)
+[optuna] family=rnn trial=19 complete best_val=7.497450e-06 best_epoch=206 elapsed_s=1229.2
+[optuna] family=rnn progress completed_trials=19 current_best=5.440690e-06 best_trial=12
+[optuna] family=rnn trial=20 n_hidden=48 batch=8 lr=2.785e-03 wd=5.894e-06 readout=(3,96) feature=(2,96)
+[optuna] family=rnn trial=20 complete best_val=6.741962e-06 best_epoch=219 elapsed_s=1497.5
+[optuna] family=rnn progress completed_trials=20 current_best=5.440690e-06 best_trial=12
+[optuna] family=rnn trial=21 n_hidden=36 batch=8 lr=4.868e-04 wd=5.108e-05 readout=(3,96) feature=(1,32)
+[optuna] family=rnn trial=21 complete best_val=6.739361e-06 best_epoch=213 elapsed_s=1451.7
+[optuna] family=rnn progress completed_trials=21 current_best=5.440690e-06 best_trial=12
+[optuna] family=rnn trial=22 n_hidden=40 batch=8 lr=1.158e-03 wd=2.270e-06 readout=(4,96) feature=(1,96)
+[optuna] family=rnn trial=22 complete best_val=6.512632e-06 best_epoch=216 elapsed_s=2215.3
+[optuna] family=rnn progress completed_trials=22 current_best=5.440690e-06 best_trial=12
+[optuna] family=rnn trial=23 n_hidden=44 batch=8 lr=1.167e-03 wd=3.772e-06 readout=(4,96) feature=(1,96)
+[optuna] family=rnn trial=23 complete best_val=5.892688e-06 best_epoch=207 elapsed_s=2624.7
+[optuna] family=rnn progress completed_trials=23 current_best=5.440690e-06 best_trial=12
+[optuna] family=rnn trial=24 n_hidden=44 batch=8 lr=2.585e-03 wd=8.170e-06 readout=(3,96) feature=(1,96)
+[optuna] family=rnn trial=24 complete best_val=6.994539e-06 best_epoch=210 elapsed_s=2253.6
+[optuna] family=rnn progress completed_trials=24 current_best=5.440690e-06 best_trial=12
+[optuna] family=rnn trial=25 n_hidden=32 batch=8 lr=1.335e-03 wd=3.411e-06 readout=(4,64) feature=(1,96)
+[optuna] family=rnn trial=25 complete best_val=6.830515e-06 best_epoch=207 elapsed_s=2423.2
+[optuna] family=rnn progress completed_trials=25 current_best=5.440690e-06 best_trial=12
+[optuna] family=rnn trial=26 n_hidden=44 batch=8 lr=9.013e-04 wd=3.715e-05 readout=(3,96) feature=(2,96)
+[optuna] family=rnn trial=26 complete best_val=6.465937e-06 best_epoch=211 elapsed_s=2450.0
+[optuna] family=rnn progress completed_trials=26 current_best=5.440690e-06 best_trial=12
+[optuna] family=rnn trial=27 n_hidden=36 batch=8 lr=6.342e-04 wd=9.061e-06 readout=(4,96) feature=(1,96)
+[optuna] family=rnn trial=27 complete best_val=6.907270e-06 best_epoch=219 elapsed_s=2537.0
+[optuna] family=rnn progress completed_trials=27 current_best=5.440690e-06 best_trial=12
+[optuna] family=rnn trial=28 n_hidden=44 batch=8 lr=2.935e-03 wd=1.895e-06 readout=(4,96) feature=(1,32)
+[optuna] family=rnn trial=28 complete best_val=7.031840e-06 best_epoch=218 elapsed_s=3261.4
+[optuna] family=rnn progress completed_trials=28 current_best=5.440690e-06 best_trial=12
+[optuna] family=rnn trial=29 n_hidden=48 batch=16 lr=3.447e-04 wd=6.493e-04 readout=(3,96) feature=(2,64)
+[optuna] family=rnn trial=29 complete best_val=7.281598e-06 best_epoch=208 elapsed_s=1575.3
+[optuna] family=rnn progress completed_trials=29 current_best=5.440690e-06 best_trial=12
+[optuna] family=rnn trial=30 n_hidden=28 batch=32 lr=8.556e-04 wd=2.741e-06 readout=(3,64) feature=(1,96)
+[optuna] family=rnn trial=30 complete best_val=8.541441e-06 best_epoch=214 elapsed_s=673.7
+[optuna] family=rnn progress completed_trials=30 current_best=5.440690e-06 best_trial=12
+[optuna] finished family=rnn best_value=5.440690e-06 best_trial=12 elapsed_s=47685.6
+[optuna] starting family=gru device=cpu trials=30 epochs=220 min_epochs=90
+[optuna] family=gru trial=1 n_hidden=8 batch=16 lr=8.723e-04 wd=3.516e-06 readout=(3,128) feature=(3,16)
+[optuna] family=gru trial=1 complete best_val=7.212846e-06 best_epoch=217 elapsed_s=1779.3
+[optuna] family=gru progress completed_trials=1 current_best=7.212846e-06 best_trial=1
+[optuna] family=gru trial=2 n_hidden=8 batch=32 lr=5.037e-04 wd=2.212e-04 readout=(2,128) feature=(2,16)
+[optuna] family=gru trial=2 complete best_val=9.159458e-06 best_epoch=217 elapsed_s=796.4
+[optuna] family=gru progress completed_trials=2 current_best=7.212846e-06 best_trial=1
+[optuna] family=gru trial=3 n_hidden=32 batch=32 lr=2.363e-04 wd=1.227e-05 readout=(2,192) feature=(1,16)
+[optuna] family=gru trial=3 complete best_val=4.864781e-06 best_epoch=220 elapsed_s=803.3
+[optuna] family=gru progress completed_trials=3 current_best=4.864781e-06 best_trial=3
+[optuna] family=gru trial=4 n_hidden=40 batch=8 lr=1.740e-03 wd=1.688e-05 readout=(4,96) feature=(2,32)
+[optuna] family=gru trial=4 complete best_val=1.188092e-06 best_epoch=215 elapsed_s=3318.1
+[optuna] family=gru progress completed_trials=4 current_best=1.188092e-06 best_trial=4
+[optuna] family=gru trial=5 n_hidden=12 batch=16 lr=3.241e-04 wd=2.764e-04 readout=(3,128) feature=(3,64)
+[optuna] family=gru trial=5 complete best_val=4.731131e-06 best_epoch=208 elapsed_s=1845.3
+[optuna] family=gru progress completed_trials=5 current_best=1.188092e-06 best_trial=4
+[optuna] family=gru trial=6 n_hidden=16 batch=32 lr=5.028e-04 wd=6.419e-03 readout=(2,192) feature=(3,16)
+[optuna] family=gru trial=6 complete best_val=7.016756e-06 best_epoch=215 elapsed_s=960.0
+[optuna] family=gru progress completed_trials=6 current_best=1.188092e-06 best_trial=4
+[optuna] family=gru trial=7 n_hidden=28 batch=32 lr=4.113e-03 wd=8.162e-03 readout=(2,192) feature=(3,16)
+[optuna] family=gru trial=7 complete best_val=2.235459e-06 best_epoch=208 elapsed_s=907.7
+[optuna] family=gru progress completed_trials=7 current_best=1.188092e-06 best_trial=4
+[optuna] family=gru trial=8 n_hidden=4 batch=8 lr=3.883e-03 wd=1.257e-04 readout=(3,192) feature=(2,64)
+[optuna] family=gru trial=8 complete best_val=5.862947e-06 best_epoch=205 elapsed_s=3399.8
+[optuna] family=gru progress completed_trials=8 current_best=1.188092e-06 best_trial=4
+[optuna] family=gru trial=9 n_hidden=44 batch=16 lr=1.315e-03 wd=1.810e-03 readout=(4,128) feature=(2,64)
+[optuna] family=gru trial=9 complete best_val=1.896317e-06 best_epoch=129 elapsed_s=1709.8
+[optuna] family=gru progress completed_trials=9 current_best=1.188092e-06 best_trial=4
+[optuna] family=gru trial=10 n_hidden=32 batch=16 lr=1.829e-04 wd=8.929e-03 readout=(2,192) feature=(2,32)
+[optuna] family=gru trial=10 complete best_val=6.426750e-06 best_epoch=219 elapsed_s=1454.0
+[optuna] family=gru progress completed_trials=10 current_best=1.188092e-06 best_trial=4
+[optuna] family=gru trial=11 n_hidden=48 batch=8 lr=1.781e-03 wd=1.804e-05 readout=(4,96) feature=(1,32)
+[optuna] family=gru trial=11 complete best_val=1.151061e-06 best_epoch=207 elapsed_s=3003.0
+[optuna] family=gru progress completed_trials=11 current_best=1.151061e-06 best_trial=11
+[optuna] family=gru trial=12 n_hidden=48 batch=8 lr=1.818e-03 wd=1.812e-05 readout=(4,96) feature=(1,32)
+[optuna] family=gru trial=12 complete best_val=1.216322e-06 best_epoch=216 elapsed_s=3180.4
+[optuna] family=gru progress completed_trials=12 current_best=1.151061e-06 best_trial=11
+[optuna] family=gru trial=13 n_hidden=40 batch=8 lr=2.025e-03 wd=2.486e-05 readout=(4,96) feature=(1,32)
+[optuna] family=gru trial=13 complete best_val=8.360286e-07 best_epoch=215 elapsed_s=3266.5
+[optuna] family=gru progress completed_trials=13 current_best=8.360286e-07 best_trial=13
+[optuna] family=gru trial=14 n_hidden=40 batch=8 lr=1.014e-04 wd=1.225e-06 readout=(4,96) feature=(1,96)
+[optuna] family=gru trial=14 complete best_val=1.260668e-06 best_epoch=219 elapsed_s=3181.6
+[optuna] family=gru progress completed_trials=14 current_best=8.360286e-07 best_trial=13
+[optuna] family=gru trial=15 n_hidden=48 batch=8 lr=2.465e-03 wd=3.403e-05 readout=(4,64) feature=(1,32)
+[optuna] family=gru trial=15 complete best_val=9.952402e-07 best_epoch=220 elapsed_s=2365.7
+[optuna] family=gru progress completed_trials=15 current_best=8.360286e-07 best_trial=13
+[optuna] family=gru trial=16 n_hidden=36 batch=8 lr=2.908e-03 wd=5.475e-05 readout=(4,64) feature=(1,32)
+[optuna] family=gru trial=16 complete best_val=8.969671e-07 best_epoch=209 elapsed_s=2637.6
+[optuna] family=gru progress completed_trials=16 current_best=8.360286e-07 best_trial=13
+[optuna] family=gru trial=17 n_hidden=20 batch=8 lr=3.076e-03 wd=5.958e-05 readout=(3,64) feature=(1,96)
+[optuna] family=gru trial=17 complete best_val=1.102183e-06 best_epoch=219 elapsed_s=1843.3
+[optuna] family=gru progress completed_trials=17 current_best=8.360286e-07 best_trial=13
+[optuna] family=gru trial=18 n_hidden=36 batch=8 lr=1.002e-03 wd=7.259e-04 readout=(4,64) feature=(1,32)
+[optuna] family=gru trial=18 complete best_val=1.168770e-06 best_epoch=211 elapsed_s=1804.2
+[optuna] family=gru progress completed_trials=18 current_best=8.360286e-07 best_trial=13
+[optuna] family=gru trial=19 n_hidden=24 batch=8 lr=2.355e-03 wd=5.051e-06 readout=(3,64) feature=(1,32)
+[optuna] family=gru trial=19 complete best_val=9.670532e-07 best_epoch=213 elapsed_s=1543.1
+[optuna] family=gru progress completed_trials=19 current_best=8.360286e-07 best_trial=13
+[optuna] family=gru trial=20 n_hidden=36 batch=8 lr=4.997e-03 wd=6.119e-05 readout=(4,96) feature=(2,32)
+[optuna] family=gru trial=20 complete best_val=1.204246e-06 best_epoch=207 elapsed_s=2089.0
+[optuna] family=gru progress completed_trials=20 current_best=8.360286e-07 best_trial=13
+[optuna] family=gru trial=21 n_hidden=28 batch=8 lr=1.199e-03 wd=5.950e-04 readout=(4,64) feature=(1,96)
+[optuna] family=gru trial=21 complete best_val=1.119941e-06 best_epoch=213 elapsed_s=1835.4
+[optuna] family=gru progress completed_trials=21 current_best=8.360286e-07 best_trial=13
+[optuna] family=gru trial=22 n_hidden=20 batch=8 lr=2.489e-03 wd=4.751e-06 readout=(3,64) feature=(1,32)
+[optuna] family=gru trial=22 complete best_val=1.124143e-06 best_epoch=207 elapsed_s=1538.1
+[optuna] family=gru progress completed_trials=22 current_best=8.360286e-07 best_trial=13
+[optuna] family=gru trial=23 n_hidden=24 batch=8 lr=2.696e-03 wd=4.953e-06 readout=(3,64) feature=(1,32)
+[optuna] family=gru trial=23 complete best_val=9.401470e-07 best_epoch=214 elapsed_s=1568.3
+[optuna] family=gru progress completed_trials=23 current_best=8.360286e-07 best_trial=13
+[optuna] family=gru trial=24 n_hidden=40 batch=8 lr=3.354e-03 wd=1.581e-06 readout=(3,64) feature=(1,32)
+[optuna] family=gru trial=24 complete best_val=8.722416e-07 best_epoch=220 elapsed_s=1693.3
+[optuna] family=gru progress completed_trials=24 current_best=8.360286e-07 best_trial=13
+[optuna] family=gru trial=25 n_hidden=40 batch=8 lr=3.818e-03 wd=1.082e-06 readout=(3,64) feature=(1,32)
+[optuna] family=gru trial=25 complete best_val=9.480334e-07 best_epoch=220 elapsed_s=1592.2
+[optuna] family=gru progress completed_trials=25 current_best=8.360286e-07 best_trial=13
+[optuna] family=gru trial=26 n_hidden=36 batch=8 lr=1.607e-03 wd=2.345e-06 readout=(3,96) feature=(2,32)
+[optuna] family=gru trial=26 complete best_val=9.930291e-07 best_epoch=212 elapsed_s=1821.4
+[optuna] family=gru progress completed_trials=26 current_best=8.360286e-07 best_trial=13
+[optuna] family=gru trial=27 n_hidden=44 batch=8 lr=7.206e-04 wd=4.256e-05 readout=(4,64) feature=(1,32)
+[optuna] family=gru trial=27 complete best_val=1.090685e-06 best_epoch=215 elapsed_s=1821.3
+[optuna] family=gru progress completed_trials=27 current_best=8.360286e-07 best_trial=13
+[optuna] family=gru trial=28 n_hidden=32 batch=8 lr=4.810e-03 wd=1.033e-05 readout=(4,64) feature=(1,32)
+[optuna] family=gru trial=28 complete best_val=1.223453e-06 best_epoch=213 elapsed_s=1761.1
+[optuna] family=gru progress completed_trials=28 current_best=8.360286e-07 best_trial=13
+[optuna] family=gru trial=29 n_hidden=44 batch=16 lr=3.220e-03 wd=9.008e-05 readout=(3,96) feature=(2,64)
+[optuna] family=gru trial=29 complete best_val=1.394039e-06 best_epoch=141 elapsed_s=968.7
+[optuna] family=gru progress completed_trials=29 current_best=8.360286e-07 best_trial=13
+[optuna] family=gru trial=30 n_hidden=40 batch=32 lr=8.126e-04 wd=2.732e-06 readout=(3,128) feature=(1,96)
+[optuna] family=gru trial=30 complete best_val=1.612601e-06 best_epoch=214 elapsed_s=618.3
+[optuna] family=gru progress completed_trials=30 current_best=8.360286e-07 best_trial=13
+[optuna] finished family=gru best_value=8.360286e-07 best_trial=13 elapsed_s=57110.2
+[optuna] starting family=lstm device=cpu trials=30 epochs=220 min_epochs=90
+[optuna] family=lstm trial=1 n_hidden=8 batch=16 lr=8.723e-04 wd=3.516e-06 readout=(3,128) feature=(3,16)
+[optuna] family=lstm trial=1 complete best_val=8.189185e-06 best_epoch=208 elapsed_s=1099.1
+[optuna] family=lstm progress completed_trials=1 current_best=8.189185e-06 best_trial=1
+[optuna] family=lstm trial=2 n_hidden=8 batch=32 lr=5.037e-04 wd=2.212e-04 readout=(2,128) feature=(2,16)
+[optuna] family=lstm trial=2 complete best_val=1.177344e-05 best_epoch=219 elapsed_s=486.2
+[optuna] family=lstm progress completed_trials=2 current_best=8.189185e-06 best_trial=1
+[optuna] family=lstm trial=3 n_hidden=32 batch=32 lr=2.363e-04 wd=1.227e-05 readout=(2,192) feature=(1,16)
+[optuna] family=lstm trial=3 complete best_val=1.098116e-05 best_epoch=217 elapsed_s=516.9
+[optuna] family=lstm progress completed_trials=3 current_best=8.189185e-06 best_trial=1
+[optuna] family=lstm trial=4 n_hidden=40 batch=8 lr=1.740e-03 wd=1.688e-05 readout=(4,96) feature=(2,32)
+[optuna] family=lstm trial=4 complete best_val=6.559450e-06 best_epoch=218 elapsed_s=2096.4
+[optuna] family=lstm progress completed_trials=4 current_best=6.559450e-06 best_trial=4
+[optuna] family=lstm trial=5 n_hidden=12 batch=16 lr=3.241e-04 wd=2.764e-04 readout=(3,128) feature=(3,64)
+[optuna] family=lstm trial=5 complete best_val=6.919441e-06 best_epoch=214 elapsed_s=1145.0
+[optuna] family=lstm progress completed_trials=5 current_best=6.559450e-06 best_trial=4
+[optuna] family=lstm trial=6 n_hidden=16 batch=32 lr=5.028e-04 wd=6.419e-03 readout=(2,192) feature=(3,16)
+[optuna] family=lstm trial=6 complete best_val=8.589684e-06 best_epoch=220 elapsed_s=605.0
+[optuna] family=lstm progress completed_trials=6 current_best=6.559450e-06 best_trial=4
+[optuna] family=lstm trial=7 n_hidden=28 batch=32 lr=4.113e-03 wd=8.162e-03 readout=(2,192) feature=(3,16)
+[optuna] family=lstm trial=7 complete best_val=8.335366e-06 best_epoch=206 elapsed_s=616.4
+[optuna] family=lstm progress completed_trials=7 current_best=6.559450e-06 best_trial=4
+[optuna] family=lstm trial=8 n_hidden=4 batch=8 lr=3.883e-03 wd=1.257e-04 readout=(3,192) feature=(2,64)
+[optuna] family=lstm trial=8 complete best_val=8.252799e-06 best_epoch=217 elapsed_s=2004.2
+[optuna] family=lstm progress completed_trials=8 current_best=6.559450e-06 best_trial=4
+[optuna] family=lstm trial=9 n_hidden=44 batch=16 lr=1.315e-03 wd=1.810e-03 readout=(4,128) feature=(2,64)
+[optuna] family=lstm trial=9 complete best_val=6.588595e-06 best_epoch=218 elapsed_s=1260.1
+[optuna] family=lstm progress completed_trials=9 current_best=6.559450e-06 best_trial=4
+[optuna] family=lstm trial=10 n_hidden=32 batch=16 lr=1.829e-04 wd=8.929e-03 readout=(2,192) feature=(2,32)
+[optuna] family=lstm trial=10 complete best_val=8.446396e-06 best_epoch=219 elapsed_s=901.5
+[optuna] family=lstm progress completed_trials=10 current_best=6.559450e-06 best_trial=4
+[optuna] family=lstm trial=11 n_hidden=48 batch=8 lr=1.781e-03 wd=1.804e-05 readout=(4,96) feature=(1,32)
+[optuna] family=lstm trial=11 complete best_val=5.981979e-06 best_epoch=205 elapsed_s=1909.1
+[optuna] family=lstm progress completed_trials=11 current_best=5.981979e-06 best_trial=11
+[optuna] family=lstm trial=12 n_hidden=48 batch=8 lr=1.818e-03 wd=1.812e-05 readout=(4,96) feature=(1,32)
+[optuna] family=lstm trial=12 complete best_val=6.076929e-06 best_epoch=219 elapsed_s=1866.6
+[optuna] family=lstm progress completed_trials=12 current_best=5.981979e-06 best_trial=11
+[optuna] family=lstm trial=13 n_hidden=48 batch=8 lr=2.051e-03 wd=2.494e-05 readout=(4,96) feature=(1,32)
+[optuna] family=lstm trial=13 complete best_val=6.031742e-06 best_epoch=212 elapsed_s=1870.8
+[optuna] family=lstm progress completed_trials=13 current_best=5.981979e-06 best_trial=11
+[optuna] family=lstm trial=14 n_hidden=40 batch=8 lr=1.014e-04 wd=1.225e-06 readout=(4,96) feature=(1,96)
+[optuna] family=lstm trial=14 complete best_val=5.913088e-06 best_epoch=206 elapsed_s=1890.8
+[optuna] family=lstm progress completed_trials=14 current_best=5.913088e-06 best_trial=14
+[optuna] family=lstm trial=15 n_hidden=40 batch=8 lr=1.353e-04 wd=1.085e-06 readout=(4,64) feature=(1,96)
+[optuna] family=lstm trial=15 complete best_val=6.161483e-06 best_epoch=207 elapsed_s=1891.5
+[optuna] family=lstm progress completed_trials=15 current_best=5.913088e-06 best_trial=14
+[optuna] family=lstm trial=16 n_hidden=20 batch=8 lr=1.092e-04 wd=1.370e-06 readout=(4,96) feature=(1,96)
+[optuna] family=lstm trial=16 complete best_val=5.956604e-06 best_epoch=209 elapsed_s=2242.1
+[optuna] family=lstm progress completed_trials=16 current_best=5.913088e-06 best_trial=14
+[optuna] family=lstm trial=17 n_hidden=20 batch=8 lr=1.007e-04 wd=1.135e-06 readout=(3,96) feature=(1,96)
+[optuna] family=lstm trial=17 complete best_val=6.322942e-06 best_epoch=206 elapsed_s=1629.2
+[optuna] family=lstm progress completed_trials=17 current_best=5.913088e-06 best_trial=14
+[optuna] family=lstm trial=18 n_hidden=24 batch=8 lr=1.042e-04 wd=3.430e-06 readout=(4,64) feature=(1,96)
+[optuna] family=lstm trial=18 complete best_val=6.955261e-06 best_epoch=217 elapsed_s=2471.9
+[optuna] family=lstm progress completed_trials=18 current_best=5.913088e-06 best_trial=14
+[optuna] family=lstm trial=19 n_hidden=36 batch=8 lr=2.725e-04 wd=3.663e-06 readout=(3,96) feature=(1,96)
+[optuna] family=lstm trial=19 complete best_val=5.969743e-06 best_epoch=204 elapsed_s=2418.2
+[optuna] family=lstm progress completed_trials=19 current_best=5.913088e-06 best_trial=14
+[optuna] family=lstm trial=20 n_hidden=24 batch=8 lr=1.668e-04 wd=6.119e-05 readout=(4,96) feature=(2,96)
+[optuna] family=lstm trial=20 complete best_val=5.611888e-06 best_epoch=214 elapsed_s=2005.7
+[optuna] family=lstm progress completed_trials=20 current_best=5.611888e-06 best_trial=20
+[optuna] family=lstm trial=21 n_hidden=28 batch=8 lr=1.695e-04 wd=1.063e-03 readout=(4,96) feature=(2,96)
+[optuna] family=lstm trial=21 complete best_val=6.108873e-06 best_epoch=214 elapsed_s=2041.8
+[optuna] family=lstm progress completed_trials=21 current_best=5.611888e-06 best_trial=20
+[optuna] family=lstm trial=22 n_hidden=20 batch=8 lr=1.450e-04 wd=6.321e-05 readout=(4,96) feature=(2,96)
+[optuna] family=lstm trial=22 complete best_val=6.499895e-06 best_epoch=210 elapsed_s=2002.0
+[optuna] family=lstm progress completed_trials=22 current_best=5.611888e-06 best_trial=20
+[optuna] family=lstm trial=23 n_hidden=20 batch=8 lr=3.804e-04 wd=5.203e-06 readout=(4,96) feature=(1,96)
+[optuna] family=lstm trial=23 complete best_val=6.609995e-06 best_epoch=189 elapsed_s=1785.4
+[optuna] family=lstm progress completed_trials=23 current_best=5.611888e-06 best_trial=20
+[optuna] family=lstm trial=24 n_hidden=24 batch=8 lr=1.004e-04 wd=1.668e-06 readout=(3,96) feature=(1,96)
+[optuna] family=lstm trial=24 complete best_val=6.165555e-06 best_epoch=209 elapsed_s=1562.0
+[optuna] family=lstm progress completed_trials=24 current_best=5.611888e-06 best_trial=20
+[optuna] family=lstm trial=25 n_hidden=16 batch=8 lr=2.249e-04 wd=6.994e-06 readout=(4,64) feature=(2,96)
+[optuna] family=lstm trial=25 complete best_val=6.426410e-06 best_epoch=212 elapsed_s=1896.9
+[optuna] family=lstm progress completed_trials=25 current_best=5.611888e-06 best_trial=20
+[optuna] family=lstm trial=26 n_hidden=32 batch=8 lr=1.729e-04 wd=5.269e-05 readout=(4,96) feature=(1,96)
+[optuna] family=lstm trial=26 complete best_val=6.161838e-06 best_epoch=220 elapsed_s=1773.6
+[optuna] family=lstm progress completed_trials=26 current_best=5.611888e-06 best_trial=20
+[optuna] family=lstm trial=27 n_hidden=36 batch=8 lr=1.223e-04 wd=6.407e-04 readout=(3,96) feature=(2,96)
+[optuna] family=lstm trial=27 complete best_val=6.154562e-06 best_epoch=205 elapsed_s=1795.5
+[optuna] family=lstm progress completed_trials=27 current_best=5.611888e-06 best_trial=20
+[optuna] family=lstm trial=28 n_hidden=16 batch=8 lr=1.959e-04 wd=2.105e-06 readout=(4,96) feature=(1,96)
+[optuna] family=lstm trial=28 complete best_val=6.357441e-06 best_epoch=217 elapsed_s=1749.3
+[optuna] family=lstm progress completed_trials=28 current_best=5.611888e-06 best_trial=20
+[optuna] family=lstm trial=29 n_hidden=24 batch=16 lr=4.061e-04 wd=3.395e-05 readout=(4,96) feature=(2,96)
+[optuna] family=lstm trial=29 complete best_val=6.274036e-06 best_epoch=209 elapsed_s=1117.2
+[optuna] family=lstm progress completed_trials=29 current_best=5.611888e-06 best_trial=20
+[optuna] family=lstm trial=30 n_hidden=12 batch=32 lr=7.977e-04 wd=7.048e-06 readout=(3,64) feature=(3,96)
+[optuna] family=lstm trial=30 complete best_val=6.881311e-06 best_epoch=216 elapsed_s=618.0
+[optuna] family=lstm progress completed_trials=30 current_best=5.611888e-06 best_trial=20
+[optuna] finished family=lstm best_value=5.611888e-06 best_trial=20 elapsed_s=47271.3
+family   best_value  best_trial_number                                                                                                                                                     best_params_path                                                                                                                                                 storage_path                                                                                                                                                    trials_path                                                                                                                                                    timing_path  best_trial_elapsed_seconds
+   gru 8.360286e-07                 12  /Users/jackhenry/Library/CloudStorage/OneDrive-UniversityofCambridge/Labs and Courswork/IIB Coursework/4C11/4C11_assignment_3/artifacts/optuna/best_params_gru.json  /Users/jackhenry/Library/CloudStorage/OneDrive-UniversityofCambridge/Labs and Courswork/IIB Coursework/4C11/4C11_assignment_3/artifacts/optuna/study_gru.db  /Users/jackhenry/Library/CloudStorage/OneDrive-UniversityofCambridge/Labs and Courswork/IIB Coursework/4C11/4C11_assignment_3/artifacts/optuna/trials_gru.csv  /Users/jackhenry/Library/CloudStorage/OneDrive-UniversityofCambridge/Labs and Courswork/IIB Coursework/4C11/4C11_assignment_3/artifacts/optuna/timing_gru.csv                 3266.482067
+   rnn 5.440690e-06                 11  /Users/jackhenry/Library/CloudStorage/OneDrive-UniversityofCambridge/Labs and Courswork/IIB Coursework/4C11/4C11_assignment_3/artifacts/optuna/best_params_rnn.json  /Users/jackhenry/Library/CloudStorage/OneDrive-UniversityofCambridge/Labs and Courswork/IIB Coursework/4C11/4C11_assignment_3/artifacts/optuna/study_rnn.db  /Users/jackhenry/Library/CloudStorage/OneDrive-UniversityofCambridge/Labs and Courswork/IIB Coursework/4C11/4C11_assignment_3/artifacts/optuna/trials_rnn.csv  /Users/jackhenry/Library/CloudStorage/OneDrive-UniversityofCambridge/Labs and Courswork/IIB Coursework/4C11/4C11_assignment_3/artifacts/optuna/timing_rnn.csv                 1456.059332
+  lstm 5.611888e-06                 19 /Users/jackhenry/Library/CloudStorage/OneDrive-UniversityofCambridge/Labs and Courswork/IIB Coursework/4C11/4C11_assignment_3/artifacts/optuna/best_params_lstm.json /Users/jackhenry/Library/CloudStorage/OneDrive-UniversityofCambridge/Labs and Courswork/IIB Coursework/4C11/4C11_assignment_3/artifacts/optuna/study_lstm.db /Users/jackhenry/Library/CloudStorage/OneDrive-UniversityofCambridge/Labs and Courswork/IIB Coursework/4C11/4C11_assignment_3/artifacts/optuna/trials_lstm.csv /Users/jackhenry/Library/CloudStorage/OneDrive-UniversityofCambridge/Labs and Courswork/IIB Coursework/4C11/4C11_assignment_3/artifacts/optuna/timing_lstm.csv                 2005.742704
+
+Saved family comparison to /Users/jackhenry/Library/CloudStorage/OneDrive-UniversityofCambridge/Labs and Courswork/IIB Coursework/4C11/4C11_assignment_3/artifacts/optuna/family_comparison.csv

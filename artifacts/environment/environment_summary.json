@@ -1,0 +1,66 @@
+{
+  "summary_rows": [
+    {
+      "item": "python_executable",
+      "value": "/Users/jackhenry/Library/CloudStorage/OneDrive-UniversityofCambridge/Labs and Courswork/IIB Coursework/4C11/4C11_assignment_3/.venv/bin/python"
+    },
+    {
+      "item": "python_version",
+      "value": "3.11.14"
+    },
+    {
+      "item": "platform",
+      "value": "macOS-15.4.1-arm64-arm-64bit"
+    },
+    {
+      "item": "torch_version",
+      "value": "2.11.0"
+    },
+    {
+      "item": "mps_built",
+      "value": true
+    },
+    {
+      "item": "mps_available",
+      "value": true
+    },
+    {
+      "item": "cuda_available",
+      "value": false
+    },
+    {
+      "item": "selected_device",
+      "value": "mps"
+    },
+    {
+      "item": "data_input_shape",
+      "value": [
+        400,
+        1001
+      ]
+    },
+    {
+      "item": "data_output_shape",
+      "value": [
+        400,
+        1001
+      ]
+    },
+    {
+      "item": "data_input_min",
+      "value": -0.21785902976989746
+    },
+    {
+      "item": "data_input_max",
+      "value": 0.219681516289711
+    },
+    {
+      "item": "data_output_min",
+      "value": -1.2354817390441895
+    },
+    {
+      "item": "data_output_max",
+      "value": 1.2545946836471558
+    }
+  ]
+}

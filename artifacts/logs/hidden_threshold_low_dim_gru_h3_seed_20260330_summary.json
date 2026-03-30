@@ -1,0 +1,10 @@
+{
+  "best_epoch": 206,
+  "best_val_loss": 7.764378096908331e-06,
+  "checkpoint_path": "artifacts/checkpoints/hidden_threshold_low_dim_gru_h3_seed_20260330.pt",
+  "config_path": "artifacts/logs/hidden_threshold_low_dim_gru_h3_seed_20260330_config.json",
+  "device": "cpu",
+  "history_path": "artifacts/logs/hidden_threshold_low_dim_gru_h3_seed_20260330_history.csv",
+  "n_epochs_completed": 220,
+  "run_name": "hidden_threshold_low_dim_gru_h3_seed_20260330"
+}

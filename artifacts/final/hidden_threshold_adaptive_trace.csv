@@ -1,0 +1,2 @@
+search_order,search_stage,n_hidden,mean_val_loss,threshold_limit,is_acceptable
+0,initial,4,3.2697046208340907e-06,8.778300497169767e-07,False

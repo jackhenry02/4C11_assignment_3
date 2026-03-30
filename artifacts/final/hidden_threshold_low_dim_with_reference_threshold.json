@@ -1,0 +1,19 @@
+{
+  "acceptable_hidden": [],
+  "comparison_figure_path": "artifacts/figures/hidden_threshold_low_dim_with_reference_threshold.png",
+  "comparison_grouped_path": "artifacts/final/hidden_threshold_low_dim_with_reference_grouped_results.csv",
+  "comparison_results_path": "artifacts/final/hidden_threshold_low_dim_with_reference_results.csv",
+  "core_type": "gru",
+  "device": "cpu",
+  "hidden_grid": [
+    0,
+    1,
+    2,
+    3
+  ],
+  "reference_hidden": 4,
+  "reference_results_path": "artifacts/final/hidden_threshold_adaptive_results.csv",
+  "selected_hidden": 4,
+  "threshold_found": false,
+  "threshold_limit": 8.778300497169767e-07
+}

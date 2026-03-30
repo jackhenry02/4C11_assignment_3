@@ -1,0 +1,23 @@
+{
+  "best_params": {
+    "BATCH_SIZE": 8,
+    "FEATURE_DEPTH": 2,
+    "FEATURE_WIDTH": 96,
+    "GRAD_CLIP_VALUE": 0.5,
+    "LEARNING_RATE": 0.00016677901274148637,
+    "N_HIDDEN": 24,
+    "READOUT_DEPTH": 4,
+    "READOUT_WIDTH": 96,
+    "WEIGHT_DECAY": 6.119232523850798e-05
+  },
+  "best_trial_number": 19,
+  "best_user_attrs": {
+    "best_epoch": 214,
+    "checkpoint_path": "/Users/jackhenry/Library/CloudStorage/OneDrive-UniversityofCambridge/Labs and Courswork/IIB Coursework/4C11/4C11_assignment_3/artifacts/checkpoints/optuna_lstm_trial_0019.pt",
+    "config": "{\"BATCH_SIZE\": 8, \"CORE_TYPE\": \"lstm\", \"EARLY_STOPPING_PATIENCE\": 60, \"EPOCHS\": 220, \"FEATURE_DEPTH\": 2, \"FEATURE_WIDTH\": 96, \"GRAD_CLIP_VALUE\": 0.5, \"LEARNING_RATE\": 0.00016677901274148637, \"LR_FACTOR\": 0.5, \"LR_PATIENCE\": 15, \"MIN_EPOCHS\": 90, \"MODEL_TAG\": \"optuna_lstm_trial_0019\", \"NUM_WORKERS\": 0, \"N_HIDDEN\": 24, \"PRINT_EVERY_EPOCHS\": 10, \"READOUT_DEPTH\": 4, \"READOUT_WIDTH\": 96, \"SEED\": 20260347, \"SHUFFLE\": true, \"USE_TRUE_INITIAL_OUTPUT\": true, \"VERBOSE\": false, \"WEIGHT_DECAY\": 6.119232523850798e-05}",
+    "elapsed_seconds": 2005.7427040420007
+  },
+  "best_value": 5.611887900158763e-06,
+  "core_type": "lstm",
+  "study_name": "coursework3_lstm"
+}

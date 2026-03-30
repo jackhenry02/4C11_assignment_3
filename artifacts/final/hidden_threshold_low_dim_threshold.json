@@ -1,0 +1,18 @@
+{
+  "acceptable_hidden": [],
+  "best_hidden": 3,
+  "best_loss": 8.36028618778073e-07,
+  "grouped_results_path": "artifacts/final/hidden_threshold_low_dim_grouped_results.csv",
+  "hidden_grid": [
+    0,
+    1,
+    2,
+    3
+  ],
+  "minimum_hidden": null,
+  "reference_loss": 8.36028618778073e-07,
+  "selected_hidden": 3,
+  "threshold_found": false,
+  "threshold_limit": 8.778300497169767e-07,
+  "trace_path": "artifacts/final/hidden_threshold_low_dim_trace.csv"
+}

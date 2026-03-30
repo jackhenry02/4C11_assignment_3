@@ -1,0 +1,9 @@
+{
+  "optuna_training_curve_paths": [
+    "artifacts/figures/optuna/02_rnn_best_training_curve.png",
+    "artifacts/figures/optuna/02_gru_best_training_curve.png",
+    "artifacts/figures/optuna/02_lstm_best_training_curve.png",
+    "artifacts/figures/optuna/02_best_optuna_training_curves.png"
+  ],
+  "hidden_overlay_path": "artifacts/figures/03_hidden_sweep_validation_overlay.png"
+}

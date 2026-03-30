@@ -1,0 +1,11 @@
+{
+  "best_epoch": 220,
+  "best_val_loss": 5.8175023696094286e-06,
+  "checkpoint_path": "artifacts/checkpoints/07_baseline_rno_batch32_accel_hidden_grid_0to4_baseline_rno_h4_seed_20260328.pt",
+  "config_path": "artifacts/logs/07_baseline_rno_batch32_accel_hidden_grid_0to4_baseline_rno_h4_seed_20260328_config.json",
+  "device": "cpu",
+  "history_path": "artifacts/logs/07_baseline_rno_batch32_accel_hidden_grid_0to4_baseline_rno_h4_seed_20260328_history.csv",
+  "n_epochs_completed": 220,
+  "run_name": "07_baseline_rno_batch32_accel_hidden_grid_0to4_baseline_rno_h4_seed_20260328",
+  "total_seconds": 763.326555333013
+}

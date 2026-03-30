@@ -1,0 +1,8 @@
+{
+  "best_trial_elapsed_seconds": 3266.4820666250016,
+  "best_trial_number": 12,
+  "best_value": 8.36028618778073e-07,
+  "n_trials": 30,
+  "storage": "sqlite",
+  "study_name": "coursework3_gru"
+}

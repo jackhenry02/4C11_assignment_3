@@ -1,0 +1,4 @@
+search_order,search_stage,n_hidden,mean_val_loss,threshold_limit,is_acceptable
+0,grid,0,8.826300927466946e-06,,
+1,grid,1,7.635385145476903e-06,,
+2,grid,2,6.520201395687764e-06,,

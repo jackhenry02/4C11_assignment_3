@@ -1,0 +1,17 @@
+{
+  "figure_paths": [
+    "artifacts/figures/01_sample_histories.png",
+    "artifacts/figures/01_distributions.png",
+    "artifacts/figures/01_scatter.png",
+    "artifacts/figures/01_normalization_comparison.png",
+    "artifacts/figures/01_acf_pacf.png"
+  ],
+  "normalization_path": "artifacts/eda/normalization_summary.csv",
+  "split_path": "artifacts/eda/split_summary.csv",
+  "split_seed": 20260328,
+  "stationarity_path": "artifacts/eda/stationarity_summary.csv",
+  "summary_path": "artifacts/eda/eda_summary.csv",
+  "test_size": 60,
+  "train_size": 280,
+  "val_size": 60
+}

@@ -1,0 +1,9 @@
+n_hidden,seed,best_val_loss,best_epoch,checkpoint_path,device,search_stage,search_order
+0,20260328,8.746529601921793e-06,216,artifacts/checkpoints/07_baseline_rno_batch32_accel_hidden_grid_0to4_baseline_rno_h0_seed_20260328.pt,cpu,grid,0
+0,20260329,8.906072253012098e-06,168,artifacts/checkpoints/07_baseline_rno_batch32_accel_hidden_grid_0to4_baseline_rno_h0_seed_20260329.pt,cpu,grid,0
+1,20260328,7.273075880220858e-06,219,artifacts/checkpoints/07_baseline_rno_batch32_accel_hidden_grid_0to4_baseline_rno_h1_seed_20260328.pt,cpu,grid,1
+1,20260329,7.997694410732947e-06,219,artifacts/checkpoints/07_baseline_rno_batch32_accel_hidden_grid_0to4_baseline_rno_h1_seed_20260329.pt,cpu,grid,1
+2,20260328,7.177702627814142e-06,75,artifacts/checkpoints/07_baseline_rno_batch32_accel_hidden_grid_0to4_baseline_rno_h2_seed_20260328.pt,cpu,grid,2
+2,20260329,5.862700163561385e-06,219,artifacts/checkpoints/07_baseline_rno_batch32_accel_hidden_grid_0to4_baseline_rno_h2_seed_20260329.pt,cpu,grid,2
+3,20260328,8.202074241125956e-06,48,artifacts/checkpoints/07_baseline_rno_batch32_accel_hidden_grid_0to4_baseline_rno_h3_seed_20260328.pt,cpu,grid,3
+4,20260328,5.8175023696094286e-06,220,artifacts/checkpoints/07_baseline_rno_batch32_accel_hidden_grid_0to4_baseline_rno_h4_seed_20260328.pt,cpu,grid,4

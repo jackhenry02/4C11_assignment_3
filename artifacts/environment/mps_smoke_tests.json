@@ -1,0 +1,24 @@
+{
+  "smoke_rows": [
+    {
+      "detail": "loss=0.991128",
+      "ok": true,
+      "test": "linear_selu_adamw"
+    },
+    {
+      "detail": "loss=1404.876587",
+      "ok": true,
+      "test": "rnn_explicit_rollout"
+    },
+    {
+      "detail": "loss=796.353088",
+      "ok": true,
+      "test": "gru_explicit_rollout"
+    },
+    {
+      "detail": "loss=1762.172363",
+      "ok": true,
+      "test": "lstm_explicit_rollout"
+    }
+  ]
+}

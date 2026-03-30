@@ -1,0 +1,13 @@
+n_hidden,seed,best_val_loss,best_epoch,checkpoint_path,device,search_stage,search_order
+0,20260328,8.337293365912046e-06,210,artifacts/checkpoints/hidden_threshold_low_dim_gru_h0_seed_20260328.pt,cpu,grid,0
+0,20260329,8.41754263092298e-06,205,artifacts/checkpoints/hidden_threshold_low_dim_gru_h0_seed_20260329.pt,cpu,grid,0
+0,20260330,8.393515599891543e-06,175,artifacts/checkpoints/hidden_threshold_low_dim_gru_h0_seed_20260330.pt,cpu,grid,0
+1,20260328,7.619927146151895e-06,214,artifacts/checkpoints/hidden_threshold_low_dim_gru_h1_seed_20260328.pt,cpu,grid,1
+1,20260329,8.229987543018069e-06,193,artifacts/checkpoints/hidden_threshold_low_dim_gru_h1_seed_20260329.pt,cpu,grid,1
+1,20260330,8.37883726489963e-06,196,artifacts/checkpoints/hidden_threshold_low_dim_gru_h1_seed_20260330.pt,cpu,grid,1
+2,20260328,6.777648195566144e-06,209,artifacts/checkpoints/hidden_threshold_low_dim_gru_h2_seed_20260328.pt,cpu,grid,2
+2,20260329,5.9205917750659864e-06,209,artifacts/checkpoints/hidden_threshold_low_dim_gru_h2_seed_20260329.pt,cpu,grid,2
+2,20260330,7.230372830235865e-06,210,artifacts/checkpoints/hidden_threshold_low_dim_gru_h2_seed_20260330.pt,cpu,grid,2
+3,20260328,4.2670681068557315e-06,216,artifacts/checkpoints/hidden_threshold_low_dim_gru_h3_seed_20260328.pt,cpu,grid,3
+3,20260329,5.220152161200531e-06,219,artifacts/checkpoints/hidden_threshold_low_dim_gru_h3_seed_20260329.pt,cpu,grid,3
+3,20260330,7.764378096908331e-06,206,artifacts/checkpoints/hidden_threshold_low_dim_gru_h3_seed_20260330.pt,cpu,grid,3

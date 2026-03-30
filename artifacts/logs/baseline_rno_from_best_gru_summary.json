@@ -1,0 +1,10 @@
+{
+  "best_epoch": 190,
+  "best_val_loss": 4.726324277726235e-06,
+  "checkpoint_path": "artifacts/checkpoints/baseline_rno_from_best_gru.pt",
+  "config_path": "artifacts/logs/baseline_rno_from_best_gru_config.json",
+  "device": "cpu",
+  "history_path": "artifacts/logs/baseline_rno_from_best_gru_history.csv",
+  "n_epochs_completed": 220,
+  "run_name": "baseline_rno_from_best_gru"
+}

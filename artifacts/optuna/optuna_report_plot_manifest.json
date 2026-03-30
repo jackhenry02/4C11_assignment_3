@@ -1,0 +1,35 @@
+{
+  "figure_paths": [
+    "artifacts/figures/optuna/02_family_best_validation_loss.png",
+    "artifacts/figures/optuna/02_family_best_trial_runtime.png",
+    "artifacts/figures/optuna/02_family_trial_loss_distribution.png",
+    "artifacts/figures/optuna/02_family_trial_runtime_distribution.png",
+    "artifacts/figures/optuna/02_value_runtime_tradeoff.png",
+    "artifacts/figures/optuna/02_rnn_optimization_history.png",
+    "artifacts/figures/optuna/02_rnn_loss_vs_hidden.png",
+    "artifacts/figures/optuna/02_rnn_runtime_vs_hidden.png",
+    "artifacts/figures/optuna/02_rnn_slice_grid.png",
+    "artifacts/figures/optuna/02_rnn_param_importance.png",
+    "artifacts/figures/optuna/02_gru_optimization_history.png",
+    "artifacts/figures/optuna/02_gru_loss_vs_hidden.png",
+    "artifacts/figures/optuna/02_gru_runtime_vs_hidden.png",
+    "artifacts/figures/optuna/02_gru_slice_grid.png",
+    "artifacts/figures/optuna/02_gru_param_importance.png",
+    "artifacts/figures/optuna/02_lstm_optimization_history.png",
+    "artifacts/figures/optuna/02_lstm_loss_vs_hidden.png",
+    "artifacts/figures/optuna/02_lstm_runtime_vs_hidden.png",
+    "artifacts/figures/optuna/02_lstm_slice_grid.png",
+    "artifacts/figures/optuna/02_lstm_param_importance.png"
+  ],
+  "table_paths": [
+    "artifacts/optuna/family_summary_report.csv",
+    "artifacts/optuna/top_trials_report.csv",
+    "artifacts/optuna/family_comparison_report.csv"
+  ],
+  "families": [
+    "rnn",
+    "gru",
+    "lstm"
+  ],
+  "top_k": 5
+}

@@ -1,0 +1,23 @@
+{
+  "best_params": {
+    "BATCH_SIZE": 8,
+    "FEATURE_DEPTH": 1,
+    "FEATURE_WIDTH": 32,
+    "GRAD_CLIP_VALUE": 0.5,
+    "LEARNING_RATE": 0.0020246394393832255,
+    "N_HIDDEN": 40,
+    "READOUT_DEPTH": 4,
+    "READOUT_WIDTH": 96,
+    "WEIGHT_DECAY": 2.486113705217959e-05
+  },
+  "best_trial_number": 12,
+  "best_user_attrs": {
+    "best_epoch": 215,
+    "checkpoint_path": "/Users/jackhenry/Library/CloudStorage/OneDrive-UniversityofCambridge/Labs and Courswork/IIB Coursework/4C11/4C11_assignment_3/artifacts/checkpoints/optuna_gru_trial_0012.pt",
+    "config": "{\"BATCH_SIZE\": 8, \"CORE_TYPE\": \"gru\", \"EARLY_STOPPING_PATIENCE\": 60, \"EPOCHS\": 220, \"FEATURE_DEPTH\": 1, \"FEATURE_WIDTH\": 32, \"GRAD_CLIP_VALUE\": 0.5, \"LEARNING_RATE\": 0.0020246394393832255, \"LR_FACTOR\": 0.5, \"LR_PATIENCE\": 15, \"MIN_EPOCHS\": 90, \"MODEL_TAG\": \"optuna_gru_trial_0012\", \"NUM_WORKERS\": 0, \"N_HIDDEN\": 40, \"PRINT_EVERY_EPOCHS\": 10, \"READOUT_DEPTH\": 4, \"READOUT_WIDTH\": 96, \"SEED\": 20260340, \"SHUFFLE\": true, \"USE_TRUE_INITIAL_OUTPUT\": true, \"VERBOSE\": false, \"WEIGHT_DECAY\": 2.486113705217959e-05}",
+    "elapsed_seconds": 3266.4820666250016
+  },
+  "best_value": 8.36028618778073e-07,
+  "core_type": "gru",
+  "study_name": "coursework3_gru"
+}

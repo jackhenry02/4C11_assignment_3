@@ -1,0 +1,10 @@
+{
+  "baseline_checkpoint": "artifacts/checkpoints/baseline_rno_from_best_gru.pt",
+  "baseline_core": "baseline_rno",
+  "comparison_csv": "artifacts/reports/06_baseline_rno_comparison.csv",
+  "device": "cpu",
+  "r2_bar_plot": "artifacts/figures/06_test_r2_comparison.png",
+  "reference_family": "gru",
+  "rmse_bar_plot": "artifacts/figures/06_test_rmse_comparison.png",
+  "validation_curve_plot": "artifacts/figures/06_best_models_validation_curve_comparison.png"
+}

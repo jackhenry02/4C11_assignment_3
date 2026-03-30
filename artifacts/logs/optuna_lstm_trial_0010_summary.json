@@ -1,0 +1,10 @@
+{
+  "best_epoch": 205,
+  "best_val_loss": 5.981978574709501e-06,
+  "checkpoint_path": "/Users/jackhenry/Library/CloudStorage/OneDrive-UniversityofCambridge/Labs and Courswork/IIB Coursework/4C11/4C11_assignment_3/artifacts/checkpoints/optuna_lstm_trial_0010.pt",
+  "config_path": "/Users/jackhenry/Library/CloudStorage/OneDrive-UniversityofCambridge/Labs and Courswork/IIB Coursework/4C11/4C11_assignment_3/artifacts/logs/optuna_lstm_trial_0010_config.json",
+  "device": "cpu",
+  "history_path": "/Users/jackhenry/Library/CloudStorage/OneDrive-UniversityofCambridge/Labs and Courswork/IIB Coursework/4C11/4C11_assignment_3/artifacts/logs/optuna_lstm_trial_0010_history.csv",
+  "n_epochs_completed": 220,
+  "run_name": "optuna_lstm_trial_0010"
+}
