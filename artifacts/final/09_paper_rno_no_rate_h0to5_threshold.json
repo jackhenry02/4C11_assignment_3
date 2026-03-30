@@ -1,0 +1,24 @@
+{
+  "acceptable_hidden": [
+    3,
+    4,
+    5
+  ],
+  "best_hidden": 4,
+  "best_loss": 0.0185535494238138,
+  "grouped_results_path": "artifacts/final/09_paper_rno_no_rate_h0to5_grouped_results.csv",
+  "hidden_grid": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5
+  ],
+  "minimum_hidden": 3,
+  "reference_loss": null,
+  "selected_hidden": 3,
+  "threshold_found": true,
+  "threshold_limit": 0.01948122689500449,
+  "trace_path": "artifacts/final/09_paper_rno_no_rate_h0to5_trace.csv"
+}

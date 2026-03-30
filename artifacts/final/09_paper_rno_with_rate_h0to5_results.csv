@@ -1,0 +1,7 @@
+n_hidden,seed,best_val_loss,best_epoch,checkpoint_path,device,search_stage,search_order
+0,20260341,8.739460099604912e-06,219,artifacts/checkpoints/09_paper_rno_with_rate_h0to5_paper_rno_h0_seed_20260341.pt,cpu,grid,0
+1,20260341,7.922600161691662e-06,212,artifacts/checkpoints/09_paper_rno_with_rate_h0to5_paper_rno_h1_seed_20260341.pt,cpu,grid,1
+2,20260341,7.46435034670867e-06,69,artifacts/checkpoints/09_paper_rno_with_rate_h0to5_paper_rno_h2_seed_20260341.pt,cpu,grid,2
+3,20260341,5.711676294595236e-06,211,artifacts/checkpoints/09_paper_rno_with_rate_h0to5_paper_rno_h3_seed_20260341.pt,cpu,grid,3
+4,20260341,5.95334267927683e-06,213,artifacts/checkpoints/09_paper_rno_with_rate_h0to5_paper_rno_h4_seed_20260341.pt,cpu,grid,4
+5,20260341,5.357938334782375e-06,218,artifacts/checkpoints/09_paper_rno_with_rate_h0to5_paper_rno_h5_seed_20260341.pt,cpu,grid,5

@@ -1,0 +1,11 @@
+{
+  "class_counts_csv": "artifacts/reports/10_loading_case_class_counts.csv",
+  "class_features_csv": "artifacts/reports/10_loading_case_features.csv",
+  "counts_plot_path": "artifacts/figures/10_loading_case_counts.png",
+  "grouped_metrics_csv": "artifacts/reports/10_loading_case_grouped_metrics.csv",
+  "heatmap_plot_path": "artifacts/figures/10_loading_case_relative_l2_heatmap.png",
+  "model_specs_csv": "artifacts/reports/10_loading_case_model_specs.csv",
+  "relative_l2_plot_path": "artifacts/figures/10_loading_case_relative_l2.png",
+  "representatives_plot_path": "artifacts/figures/10_loading_case_representatives.png",
+  "sample_metrics_csv": "artifacts/reports/10_loading_case_sample_metrics.csv"
+}

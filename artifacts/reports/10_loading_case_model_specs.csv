@@ -1,0 +1,4 @@
+label,checkpoint_path,color
+best_gru,/Users/jackhenry/Library/CloudStorage/OneDrive-UniversityofCambridge/Labs and Courswork/IIB Coursework/4C11/4C11_assignment_3/artifacts/checkpoints/optuna_gru_trial_0012.pt,#2ca02c
+paper_h0_no_rate,artifacts/checkpoints/08_paper_rno_h0_no_rate.pt,#1f77b4
+paper_h0_with_rate,artifacts/checkpoints/08_paper_rno_h0_with_rate.pt,#d62728

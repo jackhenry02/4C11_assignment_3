@@ -1,0 +1,13 @@
+variant,n_hidden,mean_val_loss,std_val_loss,median_best_epoch,n_runs,within_threshold
+paper_rno_no_rate,0,0.0398268401622772,,65.0,1,False
+paper_rno_no_rate,1,0.035212468355894,,197.0,1,False
+paper_rno_no_rate,2,0.0235887710005044,,217.0,1,False
+paper_rno_no_rate,3,0.0191351156681776,,218.0,1,True
+paper_rno_no_rate,4,0.0185535494238138,,212.0,1,True
+paper_rno_no_rate,5,0.0192248094826936,,206.0,1,True
+paper_rno_with_rate,0,8.739460099604912e-06,,219.0,1,False
+paper_rno_with_rate,1,7.922600161691662e-06,,212.0,1,False
+paper_rno_with_rate,2,7.46435034670867e-06,,69.0,1,False
+paper_rno_with_rate,3,5.711676294595236e-06,,211.0,1,False
+paper_rno_with_rate,4,5.95334267927683e-06,,213.0,1,False
+paper_rno_with_rate,5,5.357938334782375e-06,,218.0,1,True

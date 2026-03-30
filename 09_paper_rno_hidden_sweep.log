@@ -1,0 +1,126 @@
+[09] sweep variant=paper_rno_no_rate use_rate=False hidden_grid=[0, 1, 2, 3, 4, 5] seeds=[20260341] batch=32
+[hidden] evaluate n_hidden=0 stage=grid seeds=[20260341] order=0
+[hidden] reuse core=paper_rno n_hidden=0 seed=20260341 stage=grid
+[hidden] summary n_hidden=0 stage=grid mean_val=3.982684e-02
+[hidden] evaluate n_hidden=1 stage=grid seeds=[20260341] order=1
+[hidden] train core=paper_rno n_hidden=1 seed=20260341 stage=grid
+[hidden] done core=paper_rno n_hidden=1 seed=20260341 best_val=3.521247e-02 best_epoch=197
+[hidden] summary n_hidden=1 stage=grid mean_val=3.521247e-02
+[hidden] evaluate n_hidden=2 stage=grid seeds=[20260341] order=2
+[hidden] train core=paper_rno n_hidden=2 seed=20260341 stage=grid
+[hidden] done core=paper_rno n_hidden=2 seed=20260341 best_val=2.358877e-02 best_epoch=217
+[hidden] summary n_hidden=2 stage=grid mean_val=2.358877e-02
+[hidden] evaluate n_hidden=3 stage=grid seeds=[20260341] order=3
+[hidden] train core=paper_rno n_hidden=3 seed=20260341 stage=grid
+[hidden] done core=paper_rno n_hidden=3 seed=20260341 best_val=1.913512e-02 best_epoch=218
+[hidden] summary n_hidden=3 stage=grid mean_val=1.913512e-02
+[hidden] evaluate n_hidden=4 stage=grid seeds=[20260341] order=4
+[hidden] train core=paper_rno n_hidden=4 seed=20260341 stage=grid
+[hidden] done core=paper_rno n_hidden=4 seed=20260341 best_val=1.855355e-02 best_epoch=212
+[hidden] summary n_hidden=4 stage=grid mean_val=1.855355e-02
+[hidden] evaluate n_hidden=5 stage=grid seeds=[20260341] order=5
+[hidden] train core=paper_rno n_hidden=5 seed=20260341 stage=grid
+[hidden] done core=paper_rno n_hidden=5 seed=20260341 best_val=1.922481e-02 best_epoch=206
+[hidden] summary n_hidden=5 stage=grid mean_val=1.922481e-02
+[09] sweep variant=paper_rno_with_rate use_rate=True hidden_grid=[0, 1, 2, 3, 4, 5] seeds=[20260341] batch=32
+[hidden] evaluate n_hidden=0 stage=grid seeds=[20260341] order=0
+[hidden] train core=paper_rno n_hidden=0 seed=20260341 stage=grid
+[hidden] done core=paper_rno n_hidden=0 seed=20260341 best_val=8.739460e-06 best_epoch=219
+[hidden] summary n_hidden=0 stage=grid mean_val=8.739460e-06
+[hidden] evaluate n_hidden=1 stage=grid seeds=[20260341] order=1
+[hidden] train core=paper_rno n_hidden=1 seed=20260341 stage=grid
+[hidden] done core=paper_rno n_hidden=1 seed=20260341 best_val=7.922600e-06 best_epoch=212
+[hidden] summary n_hidden=1 stage=grid mean_val=7.922600e-06
+[hidden] evaluate n_hidden=2 stage=grid seeds=[20260341] order=2
+[hidden] train core=paper_rno n_hidden=2 seed=20260341 stage=grid
+[hidden] done core=paper_rno n_hidden=2 seed=20260341 best_val=7.464350e-06 best_epoch=69
+[hidden] summary n_hidden=2 stage=grid mean_val=7.464350e-06
+[hidden] evaluate n_hidden=3 stage=grid seeds=[20260341] order=3
+[hidden] train core=paper_rno n_hidden=3 seed=20260341 stage=grid
+[hidden] done core=paper_rno n_hidden=3 seed=20260341 best_val=5.711676e-06 best_epoch=211
+[hidden] summary n_hidden=3 stage=grid mean_val=5.711676e-06
+[hidden] evaluate n_hidden=4 stage=grid seeds=[20260341] order=4
+[hidden] train core=paper_rno n_hidden=4 seed=20260341 stage=grid
+[hidden] done core=paper_rno n_hidden=4 seed=20260341 best_val=5.953343e-06 best_epoch=213
+[hidden] summary n_hidden=4 stage=grid mean_val=5.953343e-06
+[hidden] evaluate n_hidden=5 stage=grid seeds=[20260341] order=5
+[hidden] train core=paper_rno n_hidden=5 seed=20260341 stage=grid
+[hidden] done core=paper_rno n_hidden=5 seed=20260341 best_val=5.357938e-06 best_epoch=218
+[hidden] summary n_hidden=5 stage=grid mean_val=5.357938e-06
+            variant  n_hidden  mean_val_loss  std_val_loss  median_best_epoch  n_runs  within_threshold
+  paper_rno_no_rate         0       0.039827           NaN               65.0       1             False
+  paper_rno_no_rate         1       0.035212           NaN              197.0       1             False
+  paper_rno_no_rate         2       0.023589           NaN              217.0       1             False
+  paper_rno_no_rate         3       0.019135           NaN              218.0       1              True
+  paper_rno_no_rate         4       0.018554           NaN              212.0       1              True
+  paper_rno_no_rate         5       0.019225           NaN              206.0       1              True
+paper_rno_with_rate         0       0.000009           NaN              219.0       1             False
+paper_rno_with_rate         1       0.000008           NaN              212.0       1             False
+paper_rno_with_rate         2       0.000007           NaN               69.0       1             False
+paper_rno_with_rate         3       0.000006           NaN              211.0       1             False
+paper_rno_with_rate         4       0.000006           NaN              213.0       1             False
+paper_rno_with_rate         5       0.000005           NaN              218.0       1              True
+            variant  n_hidden     seed                                                                  checkpoint_path  test_rmse  test_mae  test_r2  test_nrmse  test_relative_l2
+  paper_rno_no_rate         0 20260341   artifacts/checkpoints/09_paper_rno_no_rate_h0to5_paper_rno_h0_seed_20260341.pt   0.244396  0.198325 0.475063    0.103406          0.720947
+  paper_rno_no_rate         1 20260341   artifacts/checkpoints/09_paper_rno_no_rate_h0to5_paper_rno_h1_seed_20260341.pt   0.227010  0.178880 0.547094    0.096050          0.669659
+  paper_rno_no_rate         2 20260341   artifacts/checkpoints/09_paper_rno_no_rate_h0to5_paper_rno_h2_seed_20260341.pt   0.187284  0.129533 0.691737    0.079241          0.552472
+  paper_rno_no_rate         3 20260341   artifacts/checkpoints/09_paper_rno_no_rate_h0to5_paper_rno_h3_seed_20260341.pt   0.161878  0.107530 0.769701    0.068492          0.477525
+  paper_rno_no_rate         4 20260341   artifacts/checkpoints/09_paper_rno_no_rate_h0to5_paper_rno_h4_seed_20260341.pt   0.160019  0.105225 0.774960    0.067705          0.472041
+  paper_rno_no_rate         5 20260341   artifacts/checkpoints/09_paper_rno_no_rate_h0to5_paper_rno_h5_seed_20260341.pt   0.163067  0.108288 0.766303    0.068995          0.481034
+paper_rno_with_rate         0 20260341 artifacts/checkpoints/09_paper_rno_with_rate_h0to5_paper_rno_h0_seed_20260341.pt   0.003881  0.002278 0.999868    0.001642          0.011449
+paper_rno_with_rate         1 20260341 artifacts/checkpoints/09_paper_rno_with_rate_h0to5_paper_rno_h1_seed_20260341.pt   0.003677  0.002027 0.999881    0.001556          0.010845
+paper_rno_with_rate         2 20260341 artifacts/checkpoints/09_paper_rno_with_rate_h0to5_paper_rno_h2_seed_20260341.pt   0.003536  0.001740 0.999890    0.001496          0.010432
+paper_rno_with_rate         3 20260341 artifacts/checkpoints/09_paper_rno_with_rate_h0to5_paper_rno_h3_seed_20260341.pt   0.003126  0.001370 0.999914    0.001323          0.009221
+paper_rno_with_rate         4 20260341 artifacts/checkpoints/09_paper_rno_with_rate_h0to5_paper_rno_h4_seed_20260341.pt   0.003228  0.001428 0.999908    0.001366          0.009523
+paper_rno_with_rate         5 20260341 artifacts/checkpoints/09_paper_rno_with_rate_h0to5_paper_rno_h5_seed_20260341.pt   0.003003  0.001181 0.999921    0.001271          0.008859
+{
+  "device": "cpu",
+  "reference_family": "gru",
+  "batch_size": 32,
+  "min_epochs": 50,
+  "early_stopping_patience": 25,
+  "hidden_grid": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5
+  ],
+  "sweep_seeds": [
+    20260341
+  ],
+  "grouped_results_csv": "artifacts/reports/09_paper_rno_hidden_sweep_grouped_results.csv",
+  "raw_results_csv": "artifacts/reports/09_paper_rno_hidden_sweep_raw_results.csv",
+  "test_metrics_csv": "artifacts/reports/09_paper_rno_hidden_sweep_test_metrics.csv",
+  "validation_overlay_figure": "artifacts/figures/09_paper_rno_validation_loss_vs_hidden.png",
+  "test_relative_l2_overlay_figure": "artifacts/figures/09_paper_rno_test_relative_l2_vs_hidden.png",
+  "variant_summaries": [
+    {
+      "variant": "paper_rno_no_rate",
+      "paper_use_rate_in_stress": false,
+      "selected_hidden": 3,
+      "minimum_hidden": 3,
+      "best_hidden": 4,
+      "best_loss": 0.0185535494238138,
+      "threshold_limit": 0.01948122689500449,
+      "threshold_found": true,
+      "figure_path": "artifacts/figures/09_paper_rno_no_rate_h0to5_threshold.png",
+      "grouped_results_path": "artifacts/final/09_paper_rno_no_rate_h0to5_grouped_results.csv",
+      "results_path": "artifacts/final/09_paper_rno_no_rate_h0to5_results.csv"
+    },
+    {
+      "variant": "paper_rno_with_rate",
+      "paper_use_rate_in_stress": true,
+      "selected_hidden": 5,
+      "minimum_hidden": 5,
+      "best_hidden": 5,
+      "best_loss": 5.357938334782375e-06,
+      "threshold_limit": 5.625835251521494e-06,
+      "threshold_found": true,
+      "figure_path": "artifacts/figures/09_paper_rno_with_rate_h0to5_threshold.png",
+      "grouped_results_path": "artifacts/final/09_paper_rno_with_rate_h0to5_grouped_results.csv",
+      "results_path": "artifacts/final/09_paper_rno_with_rate_h0to5_results.csv"
+    }
+  ]
+}

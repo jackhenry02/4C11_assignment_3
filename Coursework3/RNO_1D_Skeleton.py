@@ -337,7 +337,7 @@ class RNO(nn.Module):
             self.hidden_layers = nn.Identity()
             recurrent_input_size = input_size + output_size + 1
 
-        if self.is_baseline_rno:
+        if self.is_baseline_rno or self.is_paper_rno:
             self.recurrent_cell = None
         elif not self.has_hidden_state:
             self.recurrent_cell = None
@@ -2690,6 +2690,426 @@ def run_trajectory_and_hysteresis_analysis(
         "stress_time_plot_path": stress_time_plot_path,
         "hysteresis_plot_path": hysteresis_plot_path,
         "prediction_path": evaluation["prediction_path"],
+    }
+
+
+LOADING_CLASS_ORDER = [
+    "monotonic_slow",
+    "monotonic_fast",
+    "hold_relaxation",
+    "cyclic_or_reversing",
+    "mixed_complex",
+]
+
+LOADING_CLASS_LABELS = {
+    "monotonic_slow": "Monotonic slow",
+    "monotonic_fast": "Monotonic fast",
+    "hold_relaxation": "Hold / relaxation",
+    "cyclic_or_reversing": "Cyclic / reversing",
+    "mixed_complex": "Mixed / complex",
+}
+
+
+def make_loading_case_features(strain_raw: np.ndarray) -> pd.DataFrame:
+    dt = 1.0 / max(strain_raw.shape[1] - 1, 1)
+    rows: list[dict[str, Any]] = []
+    for sample_index, strain in enumerate(strain_raw):
+        diff = np.diff(strain)
+        rate = diff / dt
+        abs_rate = np.abs(rate)
+        max_abs_rate = float(abs_rate.max()) if abs_rate.size else 0.0
+        mean_abs_rate = float(abs_rate.mean()) if abs_rate.size else 0.0
+        significant_tol = max(1e-8, 0.08 * max_abs_rate)
+        hold_tol = max(1e-8, 0.02 * max_abs_rate)
+        significant_rate = rate[abs_rate > significant_tol]
+        significant_sign = np.sign(significant_rate)
+        if significant_sign.size > 1:
+            turning_points = int(np.sum(significant_sign[1:] * significant_sign[:-1] < 0.0))
+        else:
+            turning_points = 0
+        hold_fraction = float(np.mean(abs_rate <= hold_tol)) if abs_rate.size else 1.0
+        positive_fraction = float(np.mean(rate > significant_tol)) if rate.size else 0.0
+        negative_fraction = float(np.mean(rate < -significant_tol)) if rate.size else 0.0
+        net_change = float(strain[-1] - strain[0])
+        total_variation = float(np.sum(np.abs(diff)))
+        variation_ratio = total_variation / (abs(net_change) + 1e-12)
+        strain_range = float(np.max(strain) - np.min(strain))
+        rows.append(
+            {
+                "sample_index": int(sample_index),
+                "max_abs_rate": max_abs_rate,
+                "mean_abs_rate": mean_abs_rate,
+                "turning_points": turning_points,
+                "hold_fraction": hold_fraction,
+                "positive_fraction": positive_fraction,
+                "negative_fraction": negative_fraction,
+                "net_change": net_change,
+                "total_variation": total_variation,
+                "variation_ratio": variation_ratio,
+                "strain_min": float(np.min(strain)),
+                "strain_max": float(np.max(strain)),
+                "strain_range": strain_range,
+            }
+        )
+    return pd.DataFrame(rows)
+
+
+def assign_loading_classes(feature_df: pd.DataFrame) -> pd.DataFrame:
+    classified_df = feature_df.copy()
+    base_label: list[str] = []
+    for row in classified_df.itertuples(index=False):
+        is_reversing = row.turning_points >= 3 or (
+            row.positive_fraction > 0.05 and row.negative_fraction > 0.05 and row.variation_ratio > 1.35
+        )
+        is_hold = row.hold_fraction >= 0.12 and row.variation_ratio <= 1.45
+        is_monotonic = row.turning_points <= 1 and row.variation_ratio <= 1.12
+        if is_reversing:
+            base_label.append("cyclic_or_reversing")
+        elif is_hold:
+            base_label.append("hold_relaxation")
+        elif is_monotonic:
+            base_label.append("monotonic")
+        else:
+            base_label.append("mixed_complex")
+    classified_df["base_label"] = base_label
+
+    monotonic_mask = classified_df["base_label"] == "monotonic"
+    if monotonic_mask.any():
+        rate_threshold = float(classified_df.loc[monotonic_mask, "max_abs_rate"].median())
+    else:
+        rate_threshold = float(classified_df["max_abs_rate"].median())
+
+    loading_class: list[str] = []
+    for row in classified_df.itertuples(index=False):
+        if row.base_label == "monotonic":
+            loading_class.append("monotonic_fast" if row.max_abs_rate >= rate_threshold else "monotonic_slow")
+        else:
+            loading_class.append(str(row.base_label))
+    classified_df["loading_class"] = loading_class
+    classified_df["loading_class_label"] = classified_df["loading_class"].map(LOADING_CLASS_LABELS)
+    return classified_df
+
+
+def summarize_sample_prediction_metrics(
+    y_true_raw: np.ndarray,
+    y_pred_raw: np.ndarray,
+    start_index: int = 1,
+) -> pd.DataFrame:
+    truth = y_true_raw[:, start_index:]
+    pred = y_pred_raw[:, start_index:]
+    residual = pred - truth
+    rmse = np.sqrt(np.mean(residual**2, axis=1))
+    mae = np.mean(np.abs(residual), axis=1)
+    max_abs_error = np.max(np.abs(residual), axis=1)
+    truth_l2 = np.linalg.norm(truth, axis=1)
+    residual_l2 = np.linalg.norm(residual, axis=1)
+    relative_l2 = np.divide(residual_l2, truth_l2, out=np.zeros_like(residual_l2), where=truth_l2 > 1e-12)
+    return pd.DataFrame(
+        {
+            "sample_index": np.arange(y_true_raw.shape[0], dtype=int),
+            "sample_rmse": rmse.astype(float),
+            "sample_mae": mae.astype(float),
+            "sample_max_abs_error": max_abs_error.astype(float),
+            "sample_relative_l2": relative_l2.astype(float),
+        }
+    )
+
+
+def plot_loading_case_counts(class_df: pd.DataFrame, save_path: str | Path) -> Path:
+    class_counts = (
+        class_df.groupby(["loading_class", "loading_class_label"], as_index=False)
+        .size()
+        .rename(columns={"size": "count"})
+    )
+    present_order = [name for name in LOADING_CLASS_ORDER if name in class_counts["loading_class"].tolist()]
+    class_counts["order"] = class_counts["loading_class"].map({name: i for i, name in enumerate(present_order)})
+    class_counts = class_counts.sort_values("order")
+
+    fig, ax = plt.subplots(figsize=(8.8, 4.6))
+    ax.bar(class_counts["loading_class_label"], class_counts["count"], color="#4e79a7", alpha=0.9)
+    ax.set_title("Test-set loading-case counts")
+    ax.set_ylabel("Number of samples")
+    ax.grid(axis="y", alpha=0.3)
+    ax.tick_params(axis="x", rotation=20)
+    fig.tight_layout()
+    save_path = Path(save_path)
+    ensure_directory(save_path.parent)
+    fig.savefig(save_path, dpi=200, bbox_inches="tight")
+    plt.close(fig)
+    return save_path
+
+
+def plot_loading_case_representatives(
+    strain_raw: np.ndarray,
+    class_df: pd.DataFrame,
+    save_path: str | Path,
+) -> Path:
+    present_order = [name for name in LOADING_CLASS_ORDER if name in class_df["loading_class"].tolist()]
+    time_axis = np.linspace(0.0, 1.0, strain_raw.shape[1])
+    fig, axes = plt.subplots(len(present_order), 1, figsize=(10.0, 2.5 * max(len(present_order), 1)), sharex=True)
+    if len(present_order) == 1:
+        axes = [axes]
+    for ax, loading_class in zip(axes, present_order):
+        subset = class_df.loc[class_df["loading_class"] == loading_class].copy()
+        median_rate = float(subset["max_abs_rate"].median())
+        representative_row = subset.iloc[int(np.argmin(np.abs(subset["max_abs_rate"].to_numpy() - median_rate)))]
+        sample_index = int(representative_row["sample_index"])
+        ax.plot(time_axis, strain_raw[sample_index], color="#1f77b4", linewidth=2.0)
+        ax.set_title(
+            f"{LOADING_CLASS_LABELS[loading_class]} "
+            f"(n={len(subset)}, idx={sample_index}, max|rate|={representative_row['max_abs_rate']:.2e})"
+        )
+        ax.set_ylabel("strain")
+        ax.grid(alpha=0.3)
+    axes[-1].set_xlabel("time")
+    fig.tight_layout()
+    save_path = Path(save_path)
+    ensure_directory(save_path.parent)
+    fig.savefig(save_path, dpi=200, bbox_inches="tight")
+    plt.close(fig)
+    return save_path
+
+
+def plot_loading_case_relative_l2(
+    grouped_metrics_df: pd.DataFrame,
+    save_path: str | Path,
+) -> Path:
+    present_order = [name for name in LOADING_CLASS_ORDER if name in grouped_metrics_df["loading_class"].tolist()]
+    class_labels = [LOADING_CLASS_LABELS[name] for name in present_order]
+    model_labels = list(grouped_metrics_df["model_label"].drop_duplicates())
+    model_colors: dict[str, str] = {}
+    for model_label in model_labels:
+        color_values = grouped_metrics_df.loc[grouped_metrics_df["model_label"] == model_label, "model_color"].dropna().unique().tolist()
+        model_colors[model_label] = color_values[0] if color_values else "#1f77b4"
+
+    x_positions = np.arange(len(present_order), dtype=float)
+    width = 0.8 / max(len(model_labels), 1)
+    fig, ax = plt.subplots(figsize=(10.5, 5.2))
+    for model_idx, model_label in enumerate(model_labels):
+        subset = (
+            grouped_metrics_df.loc[grouped_metrics_df["model_label"] == model_label]
+            .set_index("loading_class")
+            .reindex(present_order)
+        )
+        ax.bar(
+            x_positions + (model_idx - (len(model_labels) - 1) / 2.0) * width,
+            subset["mean_sample_relative_l2"],
+            width=width,
+            color=model_colors[model_label],
+            alpha=0.88,
+            label=model_label,
+        )
+    ax.set_title("Mean test relative L2 by loading class")
+    ax.set_xlabel("loading class")
+    ax.set_ylabel("Mean sample relative L2")
+    ax.set_yscale("log")
+    ax.set_xticks(x_positions)
+    ax.set_xticklabels(class_labels, rotation=20)
+    ax.grid(axis="y", alpha=0.3)
+    ax.legend(frameon=False)
+    fig.tight_layout()
+    save_path = Path(save_path)
+    ensure_directory(save_path.parent)
+    fig.savefig(save_path, dpi=200, bbox_inches="tight")
+    plt.close(fig)
+    return save_path
+
+
+def plot_loading_case_relative_l2_heatmap(
+    grouped_metrics_df: pd.DataFrame,
+    save_path: str | Path,
+) -> Path:
+    present_order = [name for name in LOADING_CLASS_ORDER if name in grouped_metrics_df["loading_class"].tolist()]
+    pivot = (
+        grouped_metrics_df.pivot(index="model_label", columns="loading_class", values="mean_sample_relative_l2")
+        .reindex(columns=present_order)
+    )
+    fig, ax = plt.subplots(figsize=(9.0, 1.4 + 0.8 * max(len(pivot.index), 1)))
+    image = ax.imshow(np.log10(pivot.to_numpy(dtype=float)), aspect="auto", cmap="viridis")
+    ax.set_title("log10 mean test relative L2 by model and loading class")
+    ax.set_xticks(np.arange(len(pivot.columns)))
+    ax.set_xticklabels([LOADING_CLASS_LABELS[name] for name in pivot.columns], rotation=20, ha="right")
+    ax.set_yticks(np.arange(len(pivot.index)))
+    ax.set_yticklabels(list(pivot.index))
+    colorbar = fig.colorbar(image, ax=ax, fraction=0.046, pad=0.04)
+    colorbar.set_label("log10(relative L2)")
+    for row_index, model_label in enumerate(pivot.index):
+        for col_index, loading_class in enumerate(pivot.columns):
+            value = float(pivot.loc[model_label, loading_class])
+            ax.text(col_index, row_index, f"{value:.2e}", ha="center", va="center", color="white", fontsize=8)
+    fig.tight_layout()
+    save_path = Path(save_path)
+    ensure_directory(save_path.parent)
+    fig.savefig(save_path, dpi=200, bbox_inches="tight")
+    plt.close(fig)
+    return save_path
+
+
+def build_default_loading_case_model_specs(
+    artifact_root: str | Path = DEFAULT_ARTIFACT_ROOT,
+) -> list[dict[str, Any]]:
+    artifact_root = Path(artifact_root)
+    model_specs: list[dict[str, Any]] = []
+
+    best_param_paths = sorted((artifact_root / "optuna").glob("best_params_*.json"))
+    if best_param_paths:
+        core_type, payload, _ = pick_best_family(best_param_paths)
+        model_specs.append(
+            {
+                "label": f"best_{core_type}",
+                "checkpoint_path": str(payload["best_user_attrs"]["checkpoint_path"]),
+                "color": "#2ca02c",
+            }
+        )
+
+    paper_comparison_path = artifact_root / "reports" / "08_paper_rno_h0_comparison.csv"
+    if paper_comparison_path.exists():
+        comparison_df = pd.read_csv(paper_comparison_path)
+        for row in comparison_df.itertuples(index=False):
+            variant = str(getattr(row, "variant"))
+            if variant == "paper_rno_no_rate":
+                label = "paper_h0_no_rate"
+                color = "#1f77b4"
+            elif variant == "paper_rno_with_rate":
+                label = "paper_h0_with_rate"
+                color = "#d62728"
+            else:
+                label = variant
+                color = "#9467bd"
+            model_specs.append(
+                {
+                    "label": label,
+                    "checkpoint_path": str(getattr(row, "checkpoint_path")),
+                    "color": color,
+                }
+            )
+    return model_specs
+
+
+def run_loading_case_analysis(
+    model_specs: list[dict[str, Any]],
+    artifact_root: str | Path = DEFAULT_ARTIFACT_ROOT,
+    split_seed: int = DEFAULT_SPLIT_SEED,
+) -> dict[str, Any]:
+    directories = ensure_artifact_tree(artifact_root)
+    data_bundle = prepare_data(artifact_root=artifact_root, split_seed=split_seed)
+    strain_raw = to_numpy(data_bundle["input_normalizer"].inverse_transform(data_bundle["x_test"]))
+
+    class_df = assign_loading_classes(make_loading_case_features(strain_raw=strain_raw))
+    class_counts_df = (
+        class_df.groupby(["loading_class", "loading_class_label"], as_index=False)
+        .size()
+        .rename(columns={"size": "count"})
+        .sort_values("count", ascending=False)
+        .reset_index(drop=True)
+    )
+
+    sample_metric_frames: list[pd.DataFrame] = []
+    normalized_model_specs: list[dict[str, Any]] = []
+    for model_index, spec in enumerate(model_specs):
+        checkpoint_path = Path(spec["checkpoint_path"])
+        if not checkpoint_path.exists():
+            raise FileNotFoundError(f"Checkpoint path does not exist: {checkpoint_path}")
+        label = str(spec["label"])
+        color = str(spec.get("color", ["#2ca02c", "#1f77b4", "#d62728", "#9467bd"][model_index % 4]))
+        run_stub = "".join(ch if ch.isalnum() else "_" for ch in label.lower()).strip("_")
+        evaluation = evaluate_checkpoint(
+            checkpoint_path=checkpoint_path,
+            x=data_bundle["x_test"],
+            y=data_bundle["y_test"],
+            output_normalizer=data_bundle["output_normalizer"],
+            artifact_root=artifact_root,
+            run_name=f"10_{run_stub}",
+            y_true0=data_bundle["y_test"][:, 0],
+        )
+        prediction_arrays = np.load(evaluation["prediction_path"])
+        sample_metrics_df = summarize_sample_prediction_metrics(
+            y_true_raw=prediction_arrays["y_true_raw"],
+            y_pred_raw=prediction_arrays["y_pred_raw"],
+        )
+        sample_metrics_df["model_label"] = label
+        sample_metrics_df["model_color"] = color
+        sample_metrics_df["checkpoint_path"] = str(checkpoint_path)
+        sample_metric_frames.append(sample_metrics_df.merge(class_df, on="sample_index", how="left"))
+        normalized_model_specs.append({"label": label, "checkpoint_path": str(checkpoint_path), "color": color})
+
+    sample_metrics_all = pd.concat(sample_metric_frames, ignore_index=True)
+    grouped_metrics_df = (
+        sample_metrics_all.groupby(["model_label", "model_color", "loading_class", "loading_class_label"], as_index=False)
+        .agg(
+            n_samples=("sample_index", "size"),
+            mean_sample_relative_l2=("sample_relative_l2", "mean"),
+            median_sample_relative_l2=("sample_relative_l2", "median"),
+            mean_sample_rmse=("sample_rmse", "mean"),
+            mean_sample_mae=("sample_mae", "mean"),
+            mean_sample_max_abs_error=("sample_max_abs_error", "mean"),
+        )
+    )
+    grouped_metrics_df["class_order"] = grouped_metrics_df["loading_class"].map({name: idx for idx, name in enumerate(LOADING_CLASS_ORDER)})
+    grouped_metrics_df = grouped_metrics_df.sort_values(["class_order", "model_label"]).drop(columns="class_order").reset_index(drop=True)
+
+    model_specs_df = pd.DataFrame(normalized_model_specs)
+    model_specs_path = directories["reports"] / "10_loading_case_model_specs.csv"
+    class_features_path = directories["reports"] / "10_loading_case_features.csv"
+    sample_metrics_path = directories["reports"] / "10_loading_case_sample_metrics.csv"
+    grouped_metrics_path = directories["reports"] / "10_loading_case_grouped_metrics.csv"
+    class_counts_path = directories["reports"] / "10_loading_case_class_counts.csv"
+    model_specs_df.to_csv(model_specs_path, index=False)
+    class_df.to_csv(class_features_path, index=False)
+    sample_metrics_all.to_csv(sample_metrics_path, index=False)
+    grouped_metrics_df.to_csv(grouped_metrics_path, index=False)
+    class_counts_df.to_csv(class_counts_path, index=False)
+
+    counts_plot_path = plot_loading_case_counts(
+        class_df=class_df,
+        save_path=directories["figures"] / "10_loading_case_counts.png",
+    )
+    representatives_plot_path = plot_loading_case_representatives(
+        strain_raw=strain_raw,
+        class_df=class_df,
+        save_path=directories["figures"] / "10_loading_case_representatives.png",
+    )
+    relative_l2_plot_path = plot_loading_case_relative_l2(
+        grouped_metrics_df=grouped_metrics_df,
+        save_path=directories["figures"] / "10_loading_case_relative_l2.png",
+    )
+    heatmap_plot_path = plot_loading_case_relative_l2_heatmap(
+        grouped_metrics_df=grouped_metrics_df,
+        save_path=directories["figures"] / "10_loading_case_relative_l2_heatmap.png",
+    )
+
+    summary_path = directories["reports"] / "10_loading_case_analysis_summary.json"
+    write_json(
+        summary_path,
+        {
+            "model_specs_csv": str(model_specs_path),
+            "class_features_csv": str(class_features_path),
+            "sample_metrics_csv": str(sample_metrics_path),
+            "grouped_metrics_csv": str(grouped_metrics_path),
+            "class_counts_csv": str(class_counts_path),
+            "counts_plot_path": str(counts_plot_path),
+            "representatives_plot_path": str(representatives_plot_path),
+            "relative_l2_plot_path": str(relative_l2_plot_path),
+            "heatmap_plot_path": str(heatmap_plot_path),
+        },
+    )
+
+    return {
+        "model_specs_df": model_specs_df,
+        "class_df": class_df,
+        "class_counts_df": class_counts_df,
+        "sample_metrics_df": sample_metrics_all,
+        "grouped_metrics_df": grouped_metrics_df,
+        "model_specs_path": model_specs_path,
+        "class_features_path": class_features_path,
+        "sample_metrics_path": sample_metrics_path,
+        "grouped_metrics_path": grouped_metrics_path,
+        "class_counts_path": class_counts_path,
+        "counts_plot_path": counts_plot_path,
+        "representatives_plot_path": representatives_plot_path,
+        "relative_l2_plot_path": relative_l2_plot_path,
+        "heatmap_plot_path": heatmap_plot_path,
+        "summary_path": summary_path,
     }
 
 

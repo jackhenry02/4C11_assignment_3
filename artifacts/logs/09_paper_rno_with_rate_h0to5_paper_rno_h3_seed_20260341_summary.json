@@ -1,0 +1,11 @@
+{
+  "best_epoch": 211,
+  "best_val_loss": 5.711676294595236e-06,
+  "checkpoint_path": "artifacts/checkpoints/09_paper_rno_with_rate_h0to5_paper_rno_h3_seed_20260341.pt",
+  "config_path": "artifacts/logs/09_paper_rno_with_rate_h0to5_paper_rno_h3_seed_20260341_config.json",
+  "device": "cpu",
+  "history_path": "artifacts/logs/09_paper_rno_with_rate_h0to5_paper_rno_h3_seed_20260341_history.csv",
+  "n_epochs_completed": 220,
+  "run_name": "09_paper_rno_with_rate_h0to5_paper_rno_h3_seed_20260341",
+  "total_seconds": 376.14237929199953
+}
