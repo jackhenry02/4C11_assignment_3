@@ -1,0 +1,11 @@
+{
+  "batch_size": 32,
+  "comparison_csv": "artifacts/reports/08_paper_rno_h0_comparison.csv",
+  "comparison_figure": "artifacts/figures/08_paper_rno_h0_comparison.png",
+  "device": "cpu",
+  "early_stopping_patience": 25,
+  "min_epochs": 50,
+  "n_hidden": 0,
+  "reference_family": "gru",
+  "seed": 20260341
+}

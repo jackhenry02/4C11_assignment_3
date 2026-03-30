@@ -1,0 +1,2 @@
+n_hidden,seed,best_val_loss,best_epoch,checkpoint_path,device,search_stage,search_order
+0,20260341,0.03982684016227722,65,artifacts/checkpoints/09_paper_rno_no_rate_h0to5_paper_rno_h0_seed_20260341.pt,cpu,grid,0
