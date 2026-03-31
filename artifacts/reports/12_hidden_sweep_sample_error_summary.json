@@ -1,0 +1,51 @@
+{
+  "device": "cpu",
+  "figure_path": "artifacts/figures/12_hidden_sweep_mean_vs_worst_test_case_errors.png",
+  "grouped_csv": "artifacts/reports/12_hidden_sweep_sample_error_grouped.csv",
+  "per_run_csv": "artifacts/reports/12_hidden_sweep_sample_error_per_run.csv",
+  "sweep_summaries": [
+    {
+      "acceptable_hidden_by_worst_case": [
+        2,
+        4
+      ],
+      "best_worst_sample_relative_l2": 0.02276439778506756,
+      "results_csv": "artifacts/final/hidden_threshold_low_dim_with_reference_results.csv",
+      "selected_hidden_by_worst_case": 2,
+      "sweep_display_name": "GRU low-dimensional sweep",
+      "sweep_label": "gru_low_dim",
+      "tolerance_ratio": 0.05,
+      "worst_threshold_limit": 0.023902617674320937
+    },
+    {
+      "acceptable_hidden_by_worst_case": [
+        3,
+        4,
+        5
+      ],
+      "best_worst_sample_relative_l2": 0.7840489149093628,
+      "results_csv": "artifacts/final/09_paper_rno_no_rate_h0to5_results.csv",
+      "selected_hidden_by_worst_case": 3,
+      "sweep_display_name": "paper RNO without rate",
+      "sweep_label": "paper_rno_no_rate",
+      "tolerance_ratio": 0.05,
+      "worst_threshold_limit": 0.823251360654831
+    },
+    {
+      "acceptable_hidden_by_worst_case": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "best_worst_sample_relative_l2": 0.026520131155848503,
+      "results_csv": "artifacts/final/09_paper_rno_with_rate_h0to5_results.csv",
+      "selected_hidden_by_worst_case": 1,
+      "sweep_display_name": "paper RNO with rate",
+      "sweep_label": "paper_rno_with_rate",
+      "tolerance_ratio": 0.05,
+      "worst_threshold_limit": 0.02784613771364093
+    }
+  ]
+}
