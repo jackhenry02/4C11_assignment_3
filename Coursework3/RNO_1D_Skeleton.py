@@ -27,6 +27,7 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 import torch.utils.data
+from sklearn.decomposition import PCA
 from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 
 try:
@@ -752,6 +753,54 @@ def rollout_sequence(
     return y_approx
 
 
+def rollout_sequence_with_hidden(
+    net: RNO,
+    x: torch.Tensor,
+    dt: float,
+    initial_stress_model: InitialStressModel,
+    y_true0: torch.Tensor | None = None,
+) -> dict[str, torch.Tensor]:
+    """Roll the model forward while recording the hidden state used during prediction."""
+    batch_size, T = x.shape
+    hidden = net.initHidden(batch_size, device=x.device)
+    y_approx = torch.zeros(batch_size, T, device=x.device, dtype=x.dtype)
+    hidden_history = torch.zeros(batch_size, T, net.hidden_size, device=x.device, dtype=x.dtype)
+    cell_history = torch.zeros(batch_size, T, net.hidden_size, device=x.device, dtype=x.dtype) if net.core_type == "lstm" else None
+
+    if y_true0 is not None:
+        y_approx[:, 0] = y_true0
+    else:
+        rate0 = (x[:, 1] - x[:, 0]) / dt
+        y_approx[:, 0] = initial_stress_model.predict(rate0)
+
+    if net.has_hidden_state:
+        if net.core_type == "lstm":
+            hidden_history[:, 0] = hidden[0]
+            assert cell_history is not None
+            cell_history[:, 0] = hidden[1]
+        else:
+            hidden_history[:, 0] = hidden
+
+    for i in range(1, T):
+        y_approx[:, i], hidden = net(x[:, i].unsqueeze(1), x[:, i - 1].unsqueeze(1), hidden, dt)
+        if not net.has_hidden_state:
+            continue
+        if net.core_type == "lstm":
+            hidden_history[:, i] = hidden[0]
+            assert cell_history is not None
+            cell_history[:, i] = hidden[1]
+        else:
+            hidden_history[:, i] = hidden
+
+    result = {
+        "y_pred": y_approx,
+        "hidden_history": hidden_history,
+    }
+    if cell_history is not None:
+        result["cell_history"] = cell_history
+    return result
+
+
 def compute_loss(loss_func: nn.Module, y_pred: torch.Tensor, y_true: torch.Tensor, start_index: int = 1) -> torch.Tensor:
     return loss_func(y_pred[:, start_index:], y_true[:, start_index:])
 
@@ -1134,6 +1183,62 @@ def evaluate_checkpoint(
     return {
         "metrics": metrics,
         "prediction_path": prediction_path,
+        "checkpoint": checkpoint,
+    }
+
+
+def evaluate_checkpoint_with_hidden(
+    checkpoint_path: str | Path,
+    x: torch.Tensor,
+    y: torch.Tensor,
+    output_normalizer: MinMaxNormalizer,
+    artifact_root: str | Path = DEFAULT_ARTIFACT_ROOT,
+    run_name: str = "hidden_evaluation",
+    y_true0: torch.Tensor | None = None,
+) -> dict[str, Any]:
+    """Evaluate a checkpoint and save both predictions and latent-state trajectories."""
+    device = select_device()
+    net, checkpoint = load_checkpoint(checkpoint_path, device=device)
+    initial_stress_model = InitialStressModel.from_dict(checkpoint["initial_stress_model"])
+    dt = 1.0 / (x.shape[1] - 1)
+
+    with torch.no_grad():
+        x_device = x.to(device)
+        y_device = y.to(device)
+        rollout = rollout_sequence_with_hidden(
+            net=net,
+            x=x_device,
+            dt=dt,
+            initial_stress_model=initial_stress_model,
+            y_true0=y_true0.to(device) if y_true0 is not None else None,
+        )
+
+    y_pred = rollout["y_pred"]
+    metrics = compute_metrics(y_true=y_device, y_pred=y_pred, output_normalizer=output_normalizer)
+    directories = ensure_artifact_tree(artifact_root)
+    prediction_path = directories["predictions"] / f"{run_name}_predictions.npz"
+    hidden_path = directories["predictions"] / f"{run_name}_hidden.npz"
+
+    np.savez(
+        prediction_path,
+        y_true=to_numpy(y_device),
+        y_pred=to_numpy(y_pred),
+        y_true_raw=to_numpy(output_normalizer.inverse_transform(y_device)),
+        y_pred_raw=to_numpy(output_normalizer.inverse_transform(y_pred)),
+    )
+    hidden_payload = {
+        "hidden_history": to_numpy(rollout["hidden_history"]),
+        "core_type": checkpoint["config"]["CORE_TYPE"],
+        "hidden_size": checkpoint["config"]["N_HIDDEN"],
+    }
+    if "cell_history" in rollout:
+        hidden_payload["cell_history"] = to_numpy(rollout["cell_history"])
+    np.savez(hidden_path, **hidden_payload)
+
+    return {
+        "metrics": metrics,
+        "prediction_path": prediction_path,
+        "hidden_path": hidden_path,
         "checkpoint": checkpoint,
     }
 
@@ -3167,3 +3272,499 @@ def pick_best_family(best_param_paths: list[str | Path]) -> tuple[str, dict[str,
     if best_payload is None or best_path is None:
         raise FileNotFoundError("No Optuna best-parameter files were found.")
     return best_payload["core_type"], best_payload, best_path
+
+
+def checkpoint_for_hidden_from_results(
+    results_path: str | Path,
+    n_hidden: int,
+    seed: int | None = None,
+) -> Path:
+    """Locate the saved checkpoint for one hidden-size run from a results CSV."""
+    results_df = pd.read_csv(results_path)
+    subset = results_df.loc[results_df["n_hidden"] == int(n_hidden)].copy()
+    if seed is not None and "seed" in subset.columns:
+        subset = subset.loc[subset["seed"] == int(seed)]
+    if subset.empty:
+        raise FileNotFoundError(f"No checkpoint was found in {results_path} for n_hidden={n_hidden} and seed={seed}.")
+    if "best_val_loss" in subset.columns:
+        subset = subset.sort_values("best_val_loss")
+    return Path(str(subset.iloc[0]["checkpoint_path"]))
+
+
+def build_default_hidden_state_model_specs(
+    artifact_root: str | Path = DEFAULT_ARTIFACT_ROOT,
+) -> list[dict[str, Any]]:
+    """Assemble the default hidden-state comparison set from the saved checkpoints."""
+    artifact_root = Path(artifact_root)
+    model_specs: list[dict[str, Any]] = []
+
+    family_colors = {
+        "rnn": "#1f77b4",
+        "gru": "#2ca02c",
+        "lstm": "#d62728",
+    }
+    for family in ["rnn", "gru", "lstm"]:
+        best_params_path = artifact_root / "optuna" / f"best_params_{family}.json"
+        if not best_params_path.exists():
+            continue
+        payload = read_json(best_params_path)
+        model_specs.append(
+            {
+                "label": f"best_{family}",
+                "checkpoint_path": str(payload["best_user_attrs"]["checkpoint_path"]),
+                "color": family_colors[family],
+            }
+        )
+
+    for summary_name, label, color in [
+        ("baseline_rno_from_best_gru_summary.json", "baseline_rno", "#9467bd"),
+        ("baseline_rno_best_gru_batch32_accel_replay_summary.json", "baseline_rno_batch32", "#8c564b"),
+    ]:
+        summary_path = artifact_root / "logs" / summary_name
+        if summary_path.exists():
+            payload = read_json(summary_path)
+            model_specs.append(
+                {
+                    "label": label,
+                    "checkpoint_path": str(payload["checkpoint_path"]),
+                    "color": color,
+                }
+            )
+            break
+
+    paper_variants = [
+        ("paper_rno_no_rate", "#17becf", "09_paper_rno_no_rate_h0to5_threshold.json", "09_paper_rno_no_rate_h0to5_results.csv"),
+        ("paper_rno_with_rate", "#ff7f0e", "09_paper_rno_with_rate_h0to5_threshold.json", "09_paper_rno_with_rate_h0to5_results.csv"),
+    ]
+    for label, color, threshold_name, results_name in paper_variants:
+        threshold_path = artifact_root / "final" / threshold_name
+        results_path = artifact_root / "final" / results_name
+        if not threshold_path.exists() or not results_path.exists():
+            continue
+        threshold_payload = read_json(threshold_path)
+        selected_hidden = threshold_payload.get("selected_hidden")
+        if selected_hidden is None or int(selected_hidden) <= 0:
+            continue
+        model_specs.append(
+            {
+                "label": f"{label}_h{int(selected_hidden)}",
+                "checkpoint_path": str(checkpoint_for_hidden_from_results(results_path=results_path, n_hidden=int(selected_hidden))),
+                "color": color,
+            }
+        )
+
+    return model_specs
+
+
+def select_hidden_analysis_sample_index(
+    strain_raw: np.ndarray,
+    preferred_class: str = "cyclic_or_reversing",
+) -> tuple[int, pd.DataFrame]:
+    """Choose one representative test sample for time-coloured latent-trajectory plots."""
+    class_df = assign_loading_classes(make_loading_case_features(strain_raw=strain_raw))
+    subset = class_df.loc[class_df["loading_class"] == preferred_class].copy()
+    if subset.empty:
+        subset = class_df.copy()
+    median_rate = float(subset["max_abs_rate"].median())
+    representative_row = subset.iloc[int(np.argmin(np.abs(subset["max_abs_rate"].to_numpy() - median_rate)))]
+    return int(representative_row["sample_index"]), class_df
+
+
+def flatten_hidden_history(hidden_history: np.ndarray, start_index: int = 1) -> tuple[np.ndarray, np.ndarray]:
+    """Flatten the hidden trajectories over all samples and time steps and drop constant channels."""
+    hidden_history = np.asarray(hidden_history, dtype=np.float32)
+    if hidden_history.ndim != 3:
+        raise ValueError(f"Expected hidden_history with shape [batch, time, hidden], got {hidden_history.shape}.")
+    if hidden_history.shape[-1] == 0:
+        return np.zeros((0, 0), dtype=np.float32), np.zeros((0,), dtype=bool)
+    flattened = hidden_history[:, start_index:, :].reshape(-1, hidden_history.shape[-1])
+    active_mask = flattened.std(axis=0) > 1e-12
+    return flattened[:, active_mask], active_mask
+
+
+def hidden_geometry_summary(
+    hidden_history: np.ndarray,
+    start_index: int = 1,
+) -> dict[str, Any]:
+    """Summarise redundancy and effective dimensionality of one hidden-state history."""
+    flattened, active_mask = flatten_hidden_history(hidden_history=hidden_history, start_index=start_index)
+    hidden_size = int(hidden_history.shape[-1])
+    active_hidden_size = int(active_mask.sum())
+    if active_hidden_size == 0:
+        return {
+            "hidden_size": hidden_size,
+            "active_hidden_size": 0,
+            "flattened_hidden": flattened,
+            "active_mask": active_mask,
+            "correlation": np.zeros((0, 0), dtype=np.float32),
+            "explained_variance_ratio": np.zeros((0,), dtype=np.float32),
+            "cumulative_explained_variance": np.zeros((0,), dtype=np.float32),
+            "dominant_pc_ratio": np.nan,
+            "pcs_for_90": np.nan,
+            "pcs_for_95": np.nan,
+            "pcs_for_99": np.nan,
+            "mean_abs_offdiag_corr": np.nan,
+            "max_abs_offdiag_corr": np.nan,
+            "n_pairs_abs_corr_ge_095": 0,
+            "pca": None,
+        }
+
+    if active_hidden_size == 1:
+        correlation = np.array([[1.0]], dtype=np.float32)
+        offdiag = np.array([], dtype=np.float32)
+    else:
+        correlation = np.corrcoef(flattened, rowvar=False).astype(np.float32)
+        offdiag = np.abs(correlation[~np.eye(active_hidden_size, dtype=bool)])
+
+    pca = PCA(n_components=active_hidden_size)
+    pca.fit(flattened)
+    explained = pca.explained_variance_ratio_.astype(np.float32)
+    cumulative = np.cumsum(explained)
+
+    def pcs_for_fraction(fraction: float) -> int:
+        return int(np.searchsorted(cumulative, fraction, side="left") + 1)
+
+    return {
+        "hidden_size": hidden_size,
+        "active_hidden_size": active_hidden_size,
+        "flattened_hidden": flattened,
+        "active_mask": active_mask,
+        "correlation": correlation,
+        "explained_variance_ratio": explained,
+        "cumulative_explained_variance": cumulative,
+        "dominant_pc_ratio": float(explained[0]),
+        "pcs_for_90": pcs_for_fraction(0.90),
+        "pcs_for_95": pcs_for_fraction(0.95),
+        "pcs_for_99": pcs_for_fraction(0.99),
+        "mean_abs_offdiag_corr": float(offdiag.mean()) if offdiag.size else 0.0,
+        "max_abs_offdiag_corr": float(offdiag.max()) if offdiag.size else 0.0,
+        "n_pairs_abs_corr_ge_095": int(np.sum(offdiag >= 0.95)),
+        "pca": pca,
+    }
+
+
+def project_hidden_sample_to_pca(
+    hidden_history: np.ndarray,
+    geometry: dict[str, Any],
+    sample_index: int,
+    start_index: int = 1,
+) -> np.ndarray:
+    """Project one sample's latent trajectory into the first two principal components."""
+    active_mask = geometry["active_mask"]
+    pca = geometry["pca"]
+    active_hidden_size = int(geometry["active_hidden_size"])
+    time_history = np.asarray(hidden_history[sample_index, start_index:, :], dtype=np.float32)
+    if active_hidden_size == 0:
+        return np.zeros((time_history.shape[0], 2), dtype=np.float32)
+    active_history = time_history[:, active_mask]
+    projected = pca.transform(active_history)
+    if projected.shape[1] == 1:
+        projected = np.column_stack([projected[:, 0], np.zeros_like(projected[:, 0])])
+    return projected[:, :2].astype(np.float32)
+
+
+def plot_hidden_state_correlation_heatmaps(
+    model_payloads: list[dict[str, Any]],
+    save_path: str | Path,
+) -> Path:
+    """Plot Pearson-correlation heatmaps for the active hidden channels of each model."""
+    n_models = len(model_payloads)
+    ncols = 2
+    nrows = int(np.ceil(n_models / ncols))
+    fig, axes = plt.subplots(nrows, ncols, figsize=(6.2 * ncols, 4.8 * nrows), squeeze=False)
+    axes_flat = axes.ravel()
+    for ax, payload in zip(axes_flat, model_payloads):
+        correlation = payload["geometry"]["correlation"]
+        if correlation.size == 0:
+            ax.text(0.5, 0.5, "No hidden state", ha="center", va="center", transform=ax.transAxes)
+            ax.set_axis_off()
+            continue
+        image = ax.imshow(correlation, cmap="coolwarm", vmin=-1.0, vmax=1.0, aspect="auto")
+        ax.set_title(
+            f"{payload['label']}\n"
+            f"active={payload['geometry']['active_hidden_size']}, "
+            f"mean|corr|={payload['geometry']['mean_abs_offdiag_corr']:.2f}"
+        )
+        ax.set_xlabel("hidden channel")
+        ax.set_ylabel("hidden channel")
+        fig.colorbar(image, ax=ax, fraction=0.046, pad=0.04)
+    for ax in axes_flat[n_models:]:
+        ax.set_axis_off()
+    fig.tight_layout()
+    save_path = Path(save_path)
+    ensure_directory(save_path.parent)
+    fig.savefig(save_path, dpi=200, bbox_inches="tight")
+    plt.close(fig)
+    return save_path
+
+
+def plot_hidden_state_pca_variance(
+    model_payloads: list[dict[str, Any]],
+    save_path: str | Path,
+) -> Path:
+    """Plot cumulative explained variance for the latent trajectories of each model."""
+    fig, ax = plt.subplots(figsize=(8.8, 5.4))
+    for payload in model_payloads:
+        cumulative = payload["geometry"]["cumulative_explained_variance"]
+        if cumulative.size == 0:
+            continue
+        component_axis = np.arange(1, cumulative.size + 1, dtype=int)
+        ax.plot(
+            component_axis,
+            cumulative,
+            marker="o",
+            linewidth=2.0,
+            label=payload["label"],
+            color=payload["color"],
+        )
+    for fraction, linestyle in [(0.90, "--"), (0.95, ":"), (0.99, "-.")]:
+        ax.axhline(fraction, color="black", linewidth=1.0, linestyle=linestyle, alpha=0.6)
+    ax.set_title("Cumulative explained variance of hidden trajectories")
+    ax.set_xlabel("Principal component")
+    ax.set_ylabel("Cumulative explained variance")
+    ax.set_ylim(0.0, 1.02)
+    ax.grid(alpha=0.3)
+    ax.legend(frameon=False)
+    save_path = Path(save_path)
+    ensure_directory(save_path.parent)
+    fig.tight_layout()
+    fig.savefig(save_path, dpi=200, bbox_inches="tight")
+    plt.close(fig)
+    return save_path
+
+
+def plot_hidden_state_pca_trajectories(
+    model_payloads: list[dict[str, Any]],
+    sample_index: int,
+    save_path: str | Path,
+) -> Path:
+    """Project one representative latent trajectory into two dimensions for each model."""
+    n_models = len(model_payloads)
+    ncols = 2
+    nrows = int(np.ceil(n_models / ncols))
+    fig, axes = plt.subplots(nrows, ncols, figsize=(6.2 * ncols, 4.8 * nrows), squeeze=False)
+    axes_flat = axes.ravel()
+    for ax, payload in zip(axes_flat, model_payloads):
+        projection = payload["sample_projection"]
+        if projection.size == 0:
+            ax.text(0.5, 0.5, "No hidden state", ha="center", va="center", transform=ax.transAxes)
+            ax.set_axis_off()
+            continue
+        time_axis = np.linspace(0.0, 1.0, projection.shape[0])
+        ax.plot(projection[:, 0], projection[:, 1], color="0.55", linewidth=1.0, alpha=0.8)
+        scatter = ax.scatter(
+            projection[:, 0],
+            projection[:, 1],
+            c=time_axis,
+            cmap="plasma",
+            s=14,
+            alpha=0.95,
+        )
+        ax.set_title(f"{payload['label']}\nsample={sample_index}")
+        ax.set_xlabel("PC1")
+        ax.set_ylabel("PC2")
+        ax.grid(alpha=0.3)
+        fig.colorbar(scatter, ax=ax, fraction=0.046, pad=0.04, label="time")
+    for ax in axes_flat[n_models:]:
+        ax.set_axis_off()
+    fig.tight_layout()
+    save_path = Path(save_path)
+    ensure_directory(save_path.parent)
+    fig.savefig(save_path, dpi=200, bbox_inches="tight")
+    plt.close(fig)
+    return save_path
+
+
+def plot_hidden_state_time_traces(
+    model_payloads: list[dict[str, Any]],
+    sample_index: int,
+    save_path: str | Path,
+    max_dims: int = 5,
+) -> Path:
+    """Plot the first few hidden coordinates over time for one representative sample."""
+    n_models = len(model_payloads)
+    ncols = 2
+    nrows = int(np.ceil(n_models / ncols))
+    fig, axes = plt.subplots(nrows, ncols, figsize=(6.6 * ncols, 4.5 * nrows), squeeze=False, sharex=True)
+    axes_flat = axes.ravel()
+    for ax, payload in zip(axes_flat, model_payloads):
+        hidden_history = payload["hidden_history"]
+        if hidden_history.shape[-1] == 0:
+            ax.text(0.5, 0.5, "No hidden state", ha="center", va="center", transform=ax.transAxes)
+            ax.set_axis_off()
+            continue
+        time_axis = np.linspace(0.0, 1.0, hidden_history.shape[1] - 1)
+        n_plot = min(max_dims, hidden_history.shape[-1])
+        for hidden_index in range(n_plot):
+            ax.plot(time_axis, hidden_history[sample_index, 1:, hidden_index], linewidth=1.3, label=f"h{hidden_index}")
+        ax.set_title(f"{payload['label']}\nsample={sample_index}, first {n_plot} hidden coordinates")
+        ax.set_xlabel("time")
+        ax.set_ylabel("hidden value")
+        ax.grid(alpha=0.3)
+        ax.legend(frameon=False, ncol=2, fontsize=8)
+    for ax in axes_flat[n_models:]:
+        ax.set_axis_off()
+    fig.tight_layout()
+    save_path = Path(save_path)
+    ensure_directory(save_path.parent)
+    fig.savefig(save_path, dpi=200, bbox_inches="tight")
+    plt.close(fig)
+    return save_path
+
+
+def run_hidden_state_analysis(
+    model_specs: list[dict[str, Any]],
+    artifact_root: str | Path = DEFAULT_ARTIFACT_ROOT,
+    split_seed: int = DEFAULT_SPLIT_SEED,
+    preferred_sample_class: str = "cyclic_or_reversing",
+) -> dict[str, Any]:
+    """Evaluate selected checkpoints, extract hidden trajectories, and summarise their geometry."""
+    directories = ensure_artifact_tree(artifact_root)
+    data_bundle = prepare_data(artifact_root=artifact_root, split_seed=split_seed)
+    strain_raw = to_numpy(data_bundle["input_normalizer"].inverse_transform(data_bundle["x_test"]))
+    sample_index, class_df = select_hidden_analysis_sample_index(
+        strain_raw=strain_raw,
+        preferred_class=preferred_sample_class,
+    )
+
+    model_payloads: list[dict[str, Any]] = []
+    summary_rows: list[dict[str, Any]] = []
+    pca_rows: list[dict[str, Any]] = []
+
+    for model_spec in model_specs:
+        label = str(model_spec["label"])
+        checkpoint_path = Path(model_spec["checkpoint_path"])
+        color = str(model_spec.get("color", "#1f77b4"))
+        run_stub = "".join(ch if ch.isalnum() else "_" for ch in label.lower()).strip("_")
+        evaluation = evaluate_checkpoint_with_hidden(
+            checkpoint_path=checkpoint_path,
+            x=data_bundle["x_test"],
+            y=data_bundle["y_test"],
+            output_normalizer=data_bundle["output_normalizer"],
+            artifact_root=artifact_root,
+            run_name=f"11_{run_stub}",
+            y_true0=data_bundle["y_test"][:, 0],
+        )
+        hidden_arrays = np.load(evaluation["hidden_path"])
+        hidden_history = hidden_arrays["hidden_history"]
+        geometry = hidden_geometry_summary(hidden_history=hidden_history)
+        sample_projection = project_hidden_sample_to_pca(
+            hidden_history=hidden_history,
+            geometry=geometry,
+            sample_index=sample_index,
+        )
+        model_payloads.append(
+            {
+                "label": label,
+                "color": color,
+                "checkpoint_path": str(checkpoint_path),
+                "hidden_history": hidden_history,
+                "geometry": geometry,
+                "sample_projection": sample_projection,
+                "prediction_path": evaluation["prediction_path"],
+                "hidden_path": evaluation["hidden_path"],
+            }
+        )
+        summary_rows.append(
+            {
+                "model_label": label,
+                "checkpoint_path": str(checkpoint_path),
+                "hidden_size": geometry["hidden_size"],
+                "active_hidden_size": geometry["active_hidden_size"],
+                "dominant_pc_ratio": geometry["dominant_pc_ratio"],
+                "pcs_for_90": geometry["pcs_for_90"],
+                "pcs_for_95": geometry["pcs_for_95"],
+                "pcs_for_99": geometry["pcs_for_99"],
+                "mean_abs_offdiag_corr": geometry["mean_abs_offdiag_corr"],
+                "max_abs_offdiag_corr": geometry["max_abs_offdiag_corr"],
+                "n_pairs_abs_corr_ge_095": geometry["n_pairs_abs_corr_ge_095"],
+                "test_relative_l2": evaluation["metrics"]["relative_l2"],
+                "test_rmse": evaluation["metrics"]["rmse"],
+                "test_r2": evaluation["metrics"]["r2"],
+                "prediction_path": str(evaluation["prediction_path"]),
+                "hidden_path": str(evaluation["hidden_path"]),
+            }
+        )
+        for component_index, (ratio, cumulative) in enumerate(
+            zip(geometry["explained_variance_ratio"], geometry["cumulative_explained_variance"]),
+            start=1,
+        ):
+            pca_rows.append(
+                {
+                    "model_label": label,
+                    "component": component_index,
+                    "explained_variance_ratio": float(ratio),
+                    "cumulative_explained_variance": float(cumulative),
+                }
+            )
+
+    summary_df = pd.DataFrame(summary_rows).sort_values("test_relative_l2").reset_index(drop=True)
+    pca_df = pd.DataFrame(pca_rows)
+    model_specs_df = pd.DataFrame(model_specs)
+    sample_metadata = class_df.loc[class_df["sample_index"] == sample_index].copy()
+
+    model_specs_path = directories["reports"] / "11_hidden_state_model_specs.csv"
+    class_features_path = directories["reports"] / "11_hidden_state_class_features.csv"
+    sample_metadata_path = directories["reports"] / "11_hidden_state_sample_selection.csv"
+    summary_path_csv = directories["reports"] / "11_hidden_state_geometry_summary.csv"
+    pca_path_csv = directories["reports"] / "11_hidden_state_pca_summary.csv"
+    model_specs_df.to_csv(model_specs_path, index=False)
+    class_df.to_csv(class_features_path, index=False)
+    sample_metadata.to_csv(sample_metadata_path, index=False)
+    summary_df.to_csv(summary_path_csv, index=False)
+    pca_df.to_csv(pca_path_csv, index=False)
+
+    correlation_plot_path = plot_hidden_state_correlation_heatmaps(
+        model_payloads=model_payloads,
+        save_path=directories["figures"] / "11_hidden_state_correlation_heatmaps.png",
+    )
+    pca_variance_plot_path = plot_hidden_state_pca_variance(
+        model_payloads=model_payloads,
+        save_path=directories["figures"] / "11_hidden_state_pca_explained_variance.png",
+    )
+    pca_trajectory_plot_path = plot_hidden_state_pca_trajectories(
+        model_payloads=model_payloads,
+        sample_index=sample_index,
+        save_path=directories["figures"] / "11_hidden_state_pca_trajectories.png",
+    )
+    time_trace_plot_path = plot_hidden_state_time_traces(
+        model_payloads=model_payloads,
+        sample_index=sample_index,
+        save_path=directories["figures"] / "11_hidden_state_time_traces.png",
+    )
+
+    summary_json_path = directories["reports"] / "11_hidden_state_analysis_summary.json"
+    write_json(
+        summary_json_path,
+        {
+            "model_specs_csv": str(model_specs_path),
+            "class_features_csv": str(class_features_path),
+            "sample_selection_csv": str(sample_metadata_path),
+            "geometry_summary_csv": str(summary_path_csv),
+            "pca_summary_csv": str(pca_path_csv),
+            "representative_sample_index": int(sample_index),
+            "preferred_sample_class": preferred_sample_class,
+            "correlation_plot_path": str(correlation_plot_path),
+            "pca_variance_plot_path": str(pca_variance_plot_path),
+            "pca_trajectory_plot_path": str(pca_trajectory_plot_path),
+            "time_trace_plot_path": str(time_trace_plot_path),
+        },
+    )
+
+    return {
+        "model_specs_df": model_specs_df,
+        "class_df": class_df,
+        "sample_metadata_df": sample_metadata,
+        "geometry_summary_df": summary_df,
+        "pca_summary_df": pca_df,
+        "model_specs_path": model_specs_path,
+        "class_features_path": class_features_path,
+        "sample_metadata_path": sample_metadata_path,
+        "geometry_summary_path": summary_path_csv,
+        "pca_summary_path": pca_path_csv,
+        "correlation_plot_path": correlation_plot_path,
+        "pca_variance_plot_path": pca_variance_plot_path,
+        "pca_trajectory_plot_path": pca_trajectory_plot_path,
+        "time_trace_plot_path": time_trace_plot_path,
+        "summary_json_path": summary_json_path,
+    }

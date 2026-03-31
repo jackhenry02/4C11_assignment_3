@@ -1,0 +1,7 @@
+label,checkpoint_path,color
+best_rnn,/Users/jackhenry/Library/CloudStorage/OneDrive-UniversityofCambridge/Labs and Courswork/IIB Coursework/4C11/4C11_assignment_3/artifacts/checkpoints/optuna_rnn_trial_0011.pt,#1f77b4
+best_gru,/Users/jackhenry/Library/CloudStorage/OneDrive-UniversityofCambridge/Labs and Courswork/IIB Coursework/4C11/4C11_assignment_3/artifacts/checkpoints/optuna_gru_trial_0012.pt,#2ca02c
+best_lstm,/Users/jackhenry/Library/CloudStorage/OneDrive-UniversityofCambridge/Labs and Courswork/IIB Coursework/4C11/4C11_assignment_3/artifacts/checkpoints/optuna_lstm_trial_0019.pt,#d62728
+baseline_rno,artifacts/checkpoints/baseline_rno_from_best_gru.pt,#9467bd
+paper_rno_no_rate_h3,artifacts/checkpoints/09_paper_rno_no_rate_h0to5_paper_rno_h3_seed_20260341.pt,#17becf
+paper_rno_with_rate_h5,artifacts/checkpoints/09_paper_rno_with_rate_h0to5_paper_rno_h5_seed_20260341.pt,#ff7f0e
