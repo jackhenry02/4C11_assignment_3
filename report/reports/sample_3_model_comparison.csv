@@ -1,0 +1,7 @@
+model_label,sample_index,sample_rmse,sample_mae,sample_relative_l2,sample_max_abs_error,checkpoint_path
+GRU,3,0.0005380245274864137,0.00032707626814953983,0.001666541676968336,0.007262766361236572,/Users/jackhenry/Library/CloudStorage/OneDrive-UniversityofCambridge/Labs and Courswork/IIB Coursework/4C11/4C11_assignment_3/artifacts/checkpoints/optuna_gru_trial_0012.pt
+Baseline RNO,3,0.0010787792271003127,0.0008173731039278209,0.003341539530083537,0.005184650421142578,artifacts/checkpoints/baseline_rno_from_best_gru.pt
+"Paper RNO, with rate",3,0.0014130619820207357,0.0010900774504989386,0.004376986529678106,0.007235288619995117,artifacts/checkpoints/09_paper_rno_with_rate_h0to5_paper_rno_h5_seed_20260341.pt
+LSTM,3,0.002109296852722764,0.0015177009627223015,0.006533587351441383,0.020350992679595947,/Users/jackhenry/Library/CloudStorage/OneDrive-UniversityofCambridge/Labs and Courswork/IIB Coursework/4C11/4C11_assignment_3/artifacts/checkpoints/optuna_lstm_trial_0019.pt
+RNN,3,0.0021464931778609753,0.0014821157092228532,0.006648804061114788,0.017633140087127686,/Users/jackhenry/Library/CloudStorage/OneDrive-UniversityofCambridge/Labs and Courswork/IIB Coursework/4C11/4C11_assignment_3/artifacts/checkpoints/optuna_rnn_trial_0011.pt
+"Paper RNO, no rate",3,0.16841165721416473,0.13104556500911713,0.5216583013534546,0.6571720838546753,artifacts/checkpoints/09_paper_rno_no_rate_h0to5_paper_rno_h3_seed_20260341.pt

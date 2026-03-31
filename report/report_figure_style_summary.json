@@ -1,0 +1,36 @@
+{
+  "sample_histories": "/Users/jackhenry/Library/CloudStorage/OneDrive-UniversityofCambridge/Labs and Courswork/IIB Coursework/4C11/4C11_assignment_3/report/figures/01_sample_histories.png",
+  "optuna_figures": [
+    "/Users/jackhenry/Library/CloudStorage/OneDrive-UniversityofCambridge/Labs and Courswork/IIB Coursework/4C11/4C11_assignment_3/report/figures/optuna/02_family_best_validation_loss.png",
+    "/Users/jackhenry/Library/CloudStorage/OneDrive-UniversityofCambridge/Labs and Courswork/IIB Coursework/4C11/4C11_assignment_3/report/figures/optuna/02_family_best_trial_runtime.png",
+    "/Users/jackhenry/Library/CloudStorage/OneDrive-UniversityofCambridge/Labs and Courswork/IIB Coursework/4C11/4C11_assignment_3/report/figures/optuna/02_family_trial_loss_distribution.png",
+    "/Users/jackhenry/Library/CloudStorage/OneDrive-UniversityofCambridge/Labs and Courswork/IIB Coursework/4C11/4C11_assignment_3/report/figures/optuna/02_gru_optimization_history.png",
+    "/Users/jackhenry/Library/CloudStorage/OneDrive-UniversityofCambridge/Labs and Courswork/IIB Coursework/4C11/4C11_assignment_3/report/figures/optuna/02_gru_loss_vs_hidden.png",
+    "/Users/jackhenry/Library/CloudStorage/OneDrive-UniversityofCambridge/Labs and Courswork/IIB Coursework/4C11/4C11_assignment_3/report/figures/optuna/02_gru_param_importance.png",
+    "/Users/jackhenry/Library/CloudStorage/OneDrive-UniversityofCambridge/Labs and Courswork/IIB Coursework/4C11/4C11_assignment_3/report/figures/optuna/02_rnn_best_training_curve.png",
+    "/Users/jackhenry/Library/CloudStorage/OneDrive-UniversityofCambridge/Labs and Courswork/IIB Coursework/4C11/4C11_assignment_3/report/figures/optuna/02_gru_best_training_curve.png",
+    "/Users/jackhenry/Library/CloudStorage/OneDrive-UniversityofCambridge/Labs and Courswork/IIB Coursework/4C11/4C11_assignment_3/report/figures/optuna/02_lstm_best_training_curve.png",
+    "/Users/jackhenry/Library/CloudStorage/OneDrive-UniversityofCambridge/Labs and Courswork/IIB Coursework/4C11/4C11_assignment_3/report/figures/optuna/02_best_optuna_training_curves.png"
+  ],
+  "inference_figures": {
+    "residual": "/Users/jackhenry/Library/CloudStorage/OneDrive-UniversityofCambridge/Labs and Courswork/IIB Coursework/4C11/4C11_assignment_3/report/figures/04_residual_analysis.png",
+    "stress_strain": "/Users/jackhenry/Library/CloudStorage/OneDrive-UniversityofCambridge/Labs and Courswork/IIB Coursework/4C11/4C11_assignment_3/report/figures/05_test_stress_strain_examples.png",
+    "stress_time": "/Users/jackhenry/Library/CloudStorage/OneDrive-UniversityofCambridge/Labs and Courswork/IIB Coursework/4C11/4C11_assignment_3/report/figures/05_test_stress_time_examples.png",
+    "hysteresis": "/Users/jackhenry/Library/CloudStorage/OneDrive-UniversityofCambridge/Labs and Courswork/IIB Coursework/4C11/4C11_assignment_3/report/figures/05_hysteresis_checks.png"
+  },
+  "hidden_threshold_figures": [
+    "/Users/jackhenry/Library/CloudStorage/OneDrive-UniversityofCambridge/Labs and Courswork/IIB Coursework/4C11/4C11_assignment_3/report/figures/hidden_threshold_low_dim_with_reference_threshold.png",
+    "/Users/jackhenry/Library/CloudStorage/OneDrive-UniversityofCambridge/Labs and Courswork/IIB Coursework/4C11/4C11_assignment_3/report/figures/09_paper_rno_no_rate_h0to5_threshold.png",
+    "/Users/jackhenry/Library/CloudStorage/OneDrive-UniversityofCambridge/Labs and Courswork/IIB Coursework/4C11/4C11_assignment_3/report/figures/09_paper_rno_with_rate_h0to5_threshold.png",
+    "/Users/jackhenry/Library/CloudStorage/OneDrive-UniversityofCambridge/Labs and Courswork/IIB Coursework/4C11/4C11_assignment_3/report/figures/09_paper_rno_validation_loss_vs_hidden.png",
+    "/Users/jackhenry/Library/CloudStorage/OneDrive-UniversityofCambridge/Labs and Courswork/IIB Coursework/4C11/4C11_assignment_3/report/figures/09_paper_rno_test_relative_l2_vs_hidden.png",
+    "/Users/jackhenry/Library/CloudStorage/OneDrive-UniversityofCambridge/Labs and Courswork/IIB Coursework/4C11/4C11_assignment_3/report/figures/08_paper_rno_h0_comparison.png"
+  ],
+  "hidden_state_figures": {
+    "correlation": "/Users/jackhenry/Library/CloudStorage/OneDrive-UniversityofCambridge/Labs and Courswork/IIB Coursework/4C11/4C11_assignment_3/report/figures/11_hidden_state_correlation_heatmaps.png",
+    "pca_variance": "/Users/jackhenry/Library/CloudStorage/OneDrive-UniversityofCambridge/Labs and Courswork/IIB Coursework/4C11/4C11_assignment_3/report/figures/11_hidden_state_pca_explained_variance.png",
+    "pca_trajectories": "/Users/jackhenry/Library/CloudStorage/OneDrive-UniversityofCambridge/Labs and Courswork/IIB Coursework/4C11/4C11_assignment_3/report/figures/11_hidden_state_pca_trajectories.png",
+    "time_traces": "/Users/jackhenry/Library/CloudStorage/OneDrive-UniversityofCambridge/Labs and Courswork/IIB Coursework/4C11/4C11_assignment_3/report/figures/11_hidden_state_time_traces.png"
+  },
+  "validation_curve_comparison": "/Users/jackhenry/Library/CloudStorage/OneDrive-UniversityofCambridge/Labs and Courswork/IIB Coursework/4C11/4C11_assignment_3/report/figures/06_best_models_validation_curve_comparison.png"
+}

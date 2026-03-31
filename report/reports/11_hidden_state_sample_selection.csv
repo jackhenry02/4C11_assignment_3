@@ -1,0 +1,2 @@
+sample_index,max_abs_rate,mean_abs_rate,turning_points,hold_fraction,positive_fraction,negative_fraction,net_change,total_variation,variation_ratio,strain_min,strain_max,strain_range,base_label,loading_class,loading_class_label
+3,0.6304978728294373,0.2093740999698639,2,0.009,0.749,0.216,0.07352741062641144,0.20937411487102509,2.847565460070332,-0.026634901762008667,0.1148158609867096,0.14145076274871826,cyclic_or_reversing,cyclic_or_reversing,Cyclic / reversing
